@@ -5,7 +5,7 @@ import { Poster } from '@components/page/home/HomePosters';
 export function HomeIntro() {
   return (
     <div className="mb-12">
-      <div className="h-[65vh] w-full">
+      <div className="h-[calc(100vh-108px)] w-full">
         <div className="relative h-full w-full">
           <video
             autoPlay={true}
@@ -20,7 +20,7 @@ export function HomeIntro() {
             />
           </video>
           <div className="absolute top-0 left-0 h-full w-full bg-black/20"></div>
-          <div className="absolute bottom-20 left-1/2 w-full -translate-x-1/2 text-center">
+          <div className="absolute bottom-30 left-1/2 w-full -translate-x-1/2 text-center">
             <div className="text-2xl leading-tight font-black text-white md:text-[80px]">GIVE SPORT</div>
             <div className="mb-4 font-medium text-white">
               Gift your favourite athletes the gear to make next year their greatest.

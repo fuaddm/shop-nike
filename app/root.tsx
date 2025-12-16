@@ -135,7 +135,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <AuthModal />
           {children}
           <Toaster
-            position="top-right"
+            position="bottom-right"
             richColors
           />
           <Footer />

@@ -41,85 +41,110 @@ export async function action({ request }: Route.ActionArgs) {
 
   const formData = await request.formData();
   const actionName = formData.get('actionName');
+  const choice = Number(formData.get('choice'));
 
-  if (actionName === 'credentials') {
-    const raw = {
-      email: formData.get('email') as string | null,
-      password: formData.get('password') as string | null,
-      repeatPassword: formData.get('repeat-password') as string | null,
-    };
+  switch (actionName) {
+    case 'credentials': {
+      const raw = {
+        email: formData.get('email') as string | null,
+        password: formData.get('password') as string | null,
+        repeatPassword: formData.get('repeat-password') as string | null,
+      };
 
-    try {
-      const data = formSchema.parse(raw);
-      const resp = await publicAPI.post('/security/signup', cookie, {
-        body: JSON.stringify(data),
-      });
+      try {
+        const data = formSchema.parse(raw);
+        const resp = await publicAPI.post('/security/signup', cookie, {
+          body: JSON.stringify(data),
+        });
+        const respData = await resp.json();
 
-      if (resp.status === 200) {
-        return { success: true, data };
-      } else if (resp.status === 202) {
-        return { success: false, restoreOrNew: true };
-      }
-
-      const respData = await resp.json();
-
-      return { success: false, errors: null, rawError: { data: respData } };
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: Record<string, string> = {};
-        for (const issue of error.issues) {
-          const path = issue.path[0];
-          if (typeof path === 'string' && !errors[path]) {
-            errors[path] = issue.message;
-          }
+        if (resp.status === 200) {
+          return { success: true, data };
+        } else if (resp.status === 202) {
+          return { success: false, restoreOrNew: true };
         }
 
-        return { success: false, errors, rawError: error };
+        return { success: false, errors: null, rawError: { data: respData } };
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const errors: Record<string, string> = {};
+          for (const issue of error.issues) {
+            const path = issue.path[0];
+            if (typeof path === 'string' && !errors[path]) {
+              errors[path] = issue.message;
+            }
+          }
+
+          return { success: false, errors, rawError: error };
+        }
+
+        // Optionally handle other errors
+        return { success: false, errors: { general: 'Unexpected error' }, rawError: error?.response || error };
       }
 
-      // Optionally handle other errors
-      return { success: false, errors: { general: 'Unexpected error' }, rawError: error?.response || error };
+      break;
     }
-  } else if (actionName === 'otpSubmit') {
-    const otp = formData.get('otp');
+    case 'otpSubmit': {
+      const otp = formData.get('otp');
 
-    try {
-      const resp = await mainAPI.post(
-        '/security/confirm-otp',
-        { enteredOtpCode: otp },
-        {
-          headers: {
-            token: cookie.publicToken,
-          },
-        }
-      );
-
-      const newToken = resp.data?.data?.token;
-      cookie.privateToken = newToken;
-      cookie.rememberMeToken = resp.data?.data?.rememberMeToken;
-
-      return data(
-        { success: true, otp },
-        {
-          headers: {
-            'Set-Cookie': await userCookie.serialize(cookie),
-          },
-        }
-      );
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: Record<string, string> = {};
-        for (const issue of error.issues) {
-          const path = issue.path[0];
-          if (typeof path === 'string' && !errors[path]) {
-            errors[path] = issue.message;
+      try {
+        const resp = await mainAPI.post(
+          '/security/confirm-otp',
+          { enteredOtpCode: otp },
+          {
+            headers: {
+              token: cookie.publicToken,
+            },
           }
+        );
+
+        const newToken = resp.data?.data?.token;
+        cookie.privateToken = newToken;
+        cookie.rememberMeToken = resp.data?.data?.rememberMeToken;
+
+        return data(
+          { success: true, otp },
+          {
+            headers: {
+              'Set-Cookie': await userCookie.serialize(cookie),
+            },
+          }
+        );
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const errors: Record<string, string> = {};
+          for (const issue of error.issues) {
+            const path = issue.path[0];
+            if (typeof path === 'string' && !errors[path]) {
+              errors[path] = issue.message;
+            }
+          }
+
+          return { success: false, errors, rawError: error };
+        }
+        // Optionally handle other errors
+        return { success: false, errors: { general: 'Unexpected error' }, rawError: error };
+      }
+
+      break;
+    }
+    case 'insert-choice': {
+      try {
+        const resp = await publicAPI.post('/security/insert-choice', cookie, {
+          body: JSON.stringify({ choice: choice }),
+        });
+
+        if (resp.status === 200) {
+          return { success: true };
         }
 
-        return { success: false, errors, rawError: error };
+        const respData = await resp.json();
+
+        return { success: false, errors: null, rawError: { data: respData } };
+      } catch (error) {
+        return { success: false, errors: { general: 'Unexpected error' }, rawError: error?.response || error };
+        break;
       }
-      // Optionally handle other errors
-      return { success: false, errors: { general: 'Unexpected error' }, rawError: error };
     }
   }
 }

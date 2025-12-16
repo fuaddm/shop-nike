@@ -95,7 +95,7 @@ export default function MyProfile() {
           <Input
             type="date"
             name="birthDate"
-            defaultValue={userData?.data?.birth_date.slice(0, 10)}
+            defaultValue={userData?.data?.birth_date?.slice(0, 10)}
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />

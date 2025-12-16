@@ -61,12 +61,6 @@ export async function action({ request }: Route.ActionArgs) {
 
     const respData = await resp.json();
 
-    console.log(respData);
-
-    if (respData.result.code === 202) {
-      return { success: false, errors: null, rawError: null, errorMsg: 'User not found.' };
-    }
-
     if (respData.result.code !== 200) {
       return { success: false, errors: null, rawError: null, errorMsg: respData.result.errorMsg };
     }

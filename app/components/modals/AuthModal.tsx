@@ -1,6 +1,6 @@
 import { ArrowRight, Eye, EyeClosed, IdCard, KeyRound, Mail, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Input, Label } from 'react-aria-components';
+import { Button, Input, Label, Radio, RadioGroup } from 'react-aria-components';
 import { useFetcher } from 'react-router';
 import { toast } from 'sonner';
 import type Swiper from 'swiper';
@@ -17,6 +17,7 @@ import { cn } from '@libs/cn';
 type ModalNames =
   | 'signin'
   | 'signup'
+  | 'signup-choice'
   | 'forgot-password'
   | 'forgot-password-verify-otp'
   | 'forgot-password-new-password';
@@ -32,11 +33,13 @@ export function AuthModal() {
   const forgotFetcher = useFetcher();
   const forgotOTPFetcher = useFetcher();
   const newPasswordFetcher = useFetcher();
+  const choiceFetcher = useFetcher();
 
   useEffect(() => {
     if (!isOpen) {
       setTimeout(() => {
         setOpenModal('signin');
+        swiperReference.current?.slideTo(0);
       }, 300);
     }
   }, [isOpen]);
@@ -51,6 +54,14 @@ export function AuthModal() {
   useEffect(() => {
     if (signupFetcher.data?.success === true && signupFetcher.state === 'idle') {
       swiperReference.current?.slideNext();
+    }
+    if (
+      signupFetcher.data?.success === false &&
+      signupFetcher.state === 'idle' &&
+      signupFetcher.data?.restoreOrNew === true
+    ) {
+      toast.info('Choose to create a new account or restore an existing one.');
+      setOpenModal('signup-choice');
     }
   }, [signupFetcher]);
 
@@ -83,8 +94,24 @@ export function AuthModal() {
   }, [newPasswordFetcher]);
 
   useEffect(() => {
+    if (choiceFetcher.data?.success === true && choiceFetcher.state === 'idle') {
+      toast.success('Submitted Successfully');
+      swiperReference.current?.slideNext();
+    }
+  }, [choiceFetcher]);
+
+  useEffect(() => {
     swiperReference.current?.update();
-  }, [fetcher, signupFetcher, otpFetcher, forgotFetcher, forgotOTPFetcher, newPasswordFetcher, openModal]);
+  }, [
+    fetcher,
+    signupFetcher,
+    otpFetcher,
+    forgotFetcher,
+    forgotOTPFetcher,
+    newPasswordFetcher,
+    choiceFetcher,
+    openModal,
+  ]);
 
   const [isEyeOpen, setIsEyeOpen] = useState(false);
 
@@ -108,6 +135,7 @@ export function AuthModal() {
               </div>
               <div className="text-lg font-medium">
                 {openModal === 'signup' && 'Signup'}
+                {openModal === 'signup-choice' && 'Account'}
                 {openModal === 'signin' && 'Sign in'}
                 {openModal === 'forgot-password' && 'Forgot Password'}
                 {openModal === 'forgot-password-verify-otp' && 'Verify OTP'}
@@ -124,6 +152,9 @@ export function AuthModal() {
           <div className="mt-6 mb-4 text-center text-2xl font-semibold">
             {openModal === 'signup' && 'Sign Up to Get Started'}
             {openModal === 'signin' && 'Welcome back! Please sign in'}
+            {openModal === 'signup-choice' && (
+              <span className="text-xl">Choose to create a new account or restore an existing one.</span>
+            )}
           </div>
           <SwiperComp
             spaceBetween={20}
@@ -379,6 +410,72 @@ export function AuthModal() {
                     />
                   </Button>
                 </signupFetcher.Form>
+              )}
+              {openModal === 'signup-choice' && (
+                <choiceFetcher.Form
+                  method="POST"
+                  action="/signup"
+                >
+                  <input
+                    type="hidden"
+                    name="actionName"
+                    value="insert-choice"
+                  />
+                  <RadioGroup
+                    name="choice"
+                    className="flex flex-col gap-3 py-4"
+                  >
+                    <Radio
+                      value="1"
+                      className="bg-surface-container-highest hover:bg-surface-container-high group flex cursor-pointer items-center gap-3 rounded-lg p-3 transition"
+                    >
+                      <div className="border-on-surface-variant aspect-square w-6 rounded-full border-2 p-1">
+                        <div className="bg-on-surface-variant aspect-square h-full w-full scale-0 rounded-full transition-transform ease-out group-data-selected:scale-100"></div>
+                      </div>
+                      Create as a new account
+                    </Radio>
+                    <Radio
+                      value="2"
+                      className="bg-surface-container-highest group hover:bg-surface-container-high flex cursor-pointer items-center gap-3 rounded-lg p-3 transition"
+                    >
+                      <div className="border-on-surface-variant aspect-square w-6 rounded-full border-2 p-1">
+                        <div className="bg-on-surface-variant aspect-square h-full w-full scale-0 rounded-full transition-transform ease-out group-data-selected:scale-100"></div>
+                      </div>
+                      Restore a deleted account
+                    </Radio>
+                  </RadioGroup>
+                  <Button
+                    type="submit"
+                    isDisabled={choiceFetcher.state !== 'idle'}
+                    className="bg-primary disabled:bg-primary/80 text-on-primary mb-4 w-full cursor-pointer rounded-2xl py-4 font-semibold transition disabled:cursor-default"
+                  >
+                    Submit
+                  </Button>
+                  {choiceFetcher.data?.success === false &&
+                    choiceFetcher.state === 'idle' &&
+                    choiceFetcher.data?.rawError?.data?.result?.errorMsg && (
+                      <div className="mb-4 rounded-lg bg-red-600/70 px-4 py-3 text-center text-white">
+                        {choiceFetcher.data?.rawError?.data?.result?.errorMsg}
+                      </div>
+                    )}
+                  {choiceFetcher.data?.success === false &&
+                    choiceFetcher.state === 'idle' &&
+                    choiceFetcher.data?.rawError?.data?.result?.error_msg && (
+                      <div className="mb-4 rounded-lg bg-red-600/70 px-4 py-3 text-center text-white">
+                        {choiceFetcher.data?.rawError?.data?.result?.error_msg}
+                      </div>
+                    )}
+                  <Button
+                    onPress={() => setOpenModal('signin')}
+                    className="group text-on-surface mx-auto mb-2 flex w-fit items-center gap-2"
+                  >
+                    Back to sign in
+                    <ArrowRight
+                      size={16}
+                      className="transition group-hover:translate-x-1"
+                    />
+                  </Button>
+                </choiceFetcher.Form>
               )}
               {openModal === 'forgot-password' && (
                 <forgotFetcher.Form
