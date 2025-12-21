@@ -72,7 +72,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ currentParams, nextParams, nextUrl }) => {
-  if (!nextUrl.pathname.startsWith('/products')) return false;
+  if (nextUrl.pathname.startsWith('/products')) return false;
   if (currentParams !== nextParams) return true;
   return false;
 };

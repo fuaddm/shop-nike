@@ -56,22 +56,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const bankCardId = String(url.searchParams.get('cardId'));
   const addressId = String(url.searchParams.get('addressId'));
-  const promoCodeId = String(url.searchParams.get('promocode'));
+  const promoCodeId = url.searchParams.get('promocode');
 
-  const searchParams = new URLSearchParams({
-    bankCardId,
-    addressId,
-    promoCodeId,
+  const resp = await authAPI.post(`/user/checkout`, cookie, {
+    body: JSON.stringify({
+      bankCardId,
+      addressId,
+      promoCodeId,
+    }),
   });
-
-  const resp = await authAPI.post(`/user/checkout?${searchParams.toString()}`, cookie);
   const data = await resp.json();
 
-  if (data.result.status === false) {
+  if (data?.result?.status === false) {
     return { success: false, errorMsg: data.result.errorMsg };
   }
 
-  return redirect('/');
+  return redirect('/settings/orders');
 }
 
 export default function CheckoutPage() {

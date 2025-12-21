@@ -11,7 +11,6 @@ export function UserButton() {
   const loaderData = useLoaderData<typeof loader>();
   const isAuth = loaderData.user?.isAuth;
 
-  const userData = loaderData.user?.userData;
   const fetcher = useFetcher();
 
   useEffect(() => {
@@ -24,20 +23,20 @@ export function UserButton() {
         <UserIcon className="stroke-on-surface-variant aspect-square w-6" />
         <div
           className={cn({
-            'absolute top-full -right-3 z-100 p-3': true,
+            'absolute top-full -right-3 z-100 min-w-[240px] p-3': true,
             'invisible -translate-y-1 opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100': true,
           })}
         >
-          <div className="bg-surface-container flex flex-col rounded-lg p-1 text-center">
+          <div className="bg-surface-container border-outline-variant flex flex-col rounded-lg border p-1 text-center">
             <Link
               to="/settings"
               className="hover:bg-surface-bright text-primary cursor-pointer rounded-md px-4 py-1.5 transition"
             >
-              {userData?.data?.email}
+              My Profile
             </Link>
             <Link
               to="/settings/payment"
-              className="hover:bg-surface-bright rounded-md px-4 py-1.5 transition"
+              className="hover:bg-surface-bright rounded-md px-4 py-1.5 whitespace-nowrap transition"
             >
               Payment Details
             </Link>

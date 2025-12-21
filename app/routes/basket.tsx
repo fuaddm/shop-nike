@@ -66,8 +66,6 @@ export async function action({ request }: ActionFunctionArgs) {
     const resp = await authAPI.post(`/user/validate-promo-code?promoCodeId=${promocode}`, cookie);
     const data = await resp.json();
 
-    console.log(data);
-
     if (data.result.status === false) {
       return { success: false, errorMsg: data.result.errorMsg };
     }

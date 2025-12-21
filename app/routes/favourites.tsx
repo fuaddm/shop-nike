@@ -33,7 +33,6 @@ export async function action({ request }: Route.ActionArgs) {
 
   try {
     await authAPI.post(`/user/toggle-favorite?variationCode=${variationCode}`, cookie);
-
     return { success: true };
   } catch {
     return { success: false };

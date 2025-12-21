@@ -12,8 +12,6 @@ import { Sort } from '@components/page/products/Sort';
 import { ProductCard } from '@components/page/shared/ProductCard';
 import { SkeletonProductCard } from '@components/page/shared/SkeletonProductCard';
 
-import { cn } from '@libs/cn';
-
 export function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
@@ -156,51 +154,49 @@ export default function ProductsPage() {
       </div>
       <div className="mb-10 flex">
         <Filter />
-        <div
-          className={cn({
-            'grid h-fit w-full grid-cols-2 gap-3 gap-y-4 md:gap-y-10 lg:grid-cols-3': true,
-            'grid w-full grid-cols-1 place-items-center lg:grid-cols-1':
-              products.length === 0 && fetcher.state !== 'loading',
-          })}
-        >
-          {(fetcher.state === 'loading' || (fetcher.state === 'idle' && fetcher.data === undefined)) && (
-            <>
-              {Array.from({ length: PAGE_SIZE })
-                .fill(0)
-                .map((_, index) => {
-                  return <SkeletonProductCard key={index} />;
-                })}
-            </>
-          )}
-          {fetcher.state !== 'loading' && (
-            <>
-              {products.map((product) => {
-                return (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    category={product.category}
-                    mainCategory={product.mainCategory}
-                    name={product.name}
-                    image={product.image}
-                    pricing={product.pricing}
-                    variations={product.variations}
-                  />
-                );
-              })}
-            </>
-          )}
-          {fetcher.state !== 'loading' && products.length === 0 && (
-            <div className="mt-20 grid w-full place-items-center">
-              <img
-                src="/svg/Pack.svg"
-                className="aspect-square w-60"
-              />
+        <div className="w-full">
+          {fetcher.state === 'idle' && products.length === 0 && fetcher.data !== undefined && (
+            <div className="grid h-fit w-full grid-cols-1 gap-3 gap-y-4 md:gap-y-10">
+              <div className="mt-20 grid w-full place-items-center">
+                <img
+                  src="/svg/Pack.svg"
+                  className="aspect-square w-60"
+                />
+              </div>
             </div>
           )}
+          <div className="grid h-fit w-full grid-cols-2 gap-3 gap-y-4 md:gap-y-6 lg:grid-cols-3">
+            {(fetcher.state === 'loading' || (fetcher.state === 'idle' && fetcher.data === undefined)) && (
+              <>
+                {Array.from({ length: PAGE_SIZE })
+                  .fill(0)
+                  .map((_, index) => {
+                    return <SkeletonProductCard key={index} />;
+                  })}
+              </>
+            )}
+            {fetcher.state === 'idle' && (
+              <>
+                {products.map((product) => {
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id}
+                      category={product.category}
+                      mainCategory={product.mainCategory}
+                      name={product.name}
+                      image={product.image}
+                      pricing={product.pricing}
+                      variations={product.variations}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </div>
         </div>
       </div>
-      {!(fetcher.state !== 'loading' && products.length === 0) && <PaginationProducts total={total} />}
+      {!(fetcher.state === 'idle' && products.length === 0) && <PaginationProducts total={total} />}
     </div>
   );
 }

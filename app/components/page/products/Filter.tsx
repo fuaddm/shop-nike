@@ -10,12 +10,20 @@ import {
   Radio,
   RadioGroup,
 } from 'react-aria-components';
+import { useRouteLoaderData } from 'react-router';
 import { colors } from '~/constants/product-const';
 
 import { cn } from '@libs/cn';
 
 export function Filter() {
   const [isOpen, setIsOpen] = useQueryState('VisibilityOfFilter', parseAsBoolean.withDefault(true));
+
+  const { hierarchy } = useRouteLoaderData('root');
+  const hierarchies = hierarchy.data.hierarchies;
+
+  const [mainCategoryId, setMainCategoryId] = useQueryState('MainCategoryId');
+  const [categoryId, setCategoryId] = useQueryState('CategoryId');
+  const [subCategoryId, setSubCategoryId] = useQueryState('SubCategoryId');
 
   const [priceRangeId, setPriceRangeId] = useQueryState('PriceRangeId');
   const [clothingGenderId, setClothingGenderId] = useQueryState(
@@ -50,6 +58,9 @@ export function Filter() {
     });
   }
 
+  const categories = hierarchies.find((hierarchy) => String(hierarchy.id) === mainCategoryId)?.categories;
+  const subCategories = categories?.find((category) => String(category.id) === categoryId)?.sub_categories;
+
   return (
     <div
       className={cn({
@@ -66,7 +77,158 @@ export function Filter() {
         <div className="mb-4 ps-1 text-xl font-bold">Filter</div>
         <div className="flex flex-col gap-2">
           <Disclosure
-            defaultExpanded={true}
+            defaultExpanded={mainCategoryId ? true : false}
+            className="group"
+          >
+            <Heading>
+              <Button
+                slot="trigger"
+                className="bg-surface-bright text-on-surface-variant group-data-expanded:text-on-surface hover:bg-surface-dim flex w-full items-center justify-between rounded-lg px-3 py-2 transition-all ease-out group-data-expanded:rounded-b-none"
+              >
+                Main Category {mainCategoryId && '(1)'}
+                <ChevronDown
+                  className="transition group-data-expanded:-rotate-180"
+                  size={18}
+                />
+              </Button>
+            </Heading>
+            <DisclosurePanel>
+              <RadioGroup
+                className="my-2 flex flex-col gap-1.5"
+                aria-label="main category"
+                name="mainCategory"
+                value={mainCategoryId ?? 'null'}
+              >
+                {hierarchies.map((hierarchy) => {
+                  return (
+                    <Radio
+                      key={hierarchy.id}
+                      className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                      value={String(hierarchy.id)}
+                      onClick={() => {
+                        if (String(hierarchy.id) === mainCategoryId) {
+                          handleFilterChange(setMainCategoryId, null);
+                          handleFilterChange(setCategoryId, null);
+                          handleFilterChange(setSubCategoryId, null);
+                        } else {
+                          handleFilterChange(setMainCategoryId, String(hierarchy.id));
+                          handleFilterChange(setCategoryId, null);
+                          handleFilterChange(setSubCategoryId, null);
+                        }
+                      }}
+                    >
+                      <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
+                        <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
+                      </div>
+                      {hierarchy.name}
+                    </Radio>
+                  );
+                })}
+              </RadioGroup>
+            </DisclosurePanel>
+          </Disclosure>
+          {categories?.length > 0 && (
+            <Disclosure
+              defaultExpanded={categoryId ? true : false}
+              className="group"
+            >
+              <Heading>
+                <Button
+                  slot="trigger"
+                  className="bg-surface-bright text-on-surface-variant group-data-expanded:text-on-surface hover:bg-surface-dim flex w-full items-center justify-between rounded-lg px-3 py-2 transition-all ease-out group-data-expanded:rounded-b-none"
+                >
+                  Category {categoryId && '(1)'}
+                  <ChevronDown
+                    className="transition group-data-expanded:-rotate-180"
+                    size={18}
+                  />
+                </Button>
+              </Heading>
+              <DisclosurePanel>
+                <RadioGroup
+                  className="my-2 flex flex-col gap-1.5"
+                  aria-label="category"
+                  name="category"
+                  value={categoryId ?? 'null'}
+                >
+                  {categories?.map((category) => {
+                    return (
+                      <Radio
+                        key={category.id}
+                        className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                        value={String(category.id)}
+                        onClick={() => {
+                          if (String(category.id) === categoryId) {
+                            handleFilterChange(setCategoryId, null);
+                            handleFilterChange(setSubCategoryId, null);
+                          } else {
+                            handleFilterChange(setCategoryId, String(category.id));
+                            handleFilterChange(setSubCategoryId, null);
+                          }
+                        }}
+                      >
+                        <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
+                          <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
+                        </div>
+                        {category.name}
+                      </Radio>
+                    );
+                  })}
+                </RadioGroup>
+              </DisclosurePanel>
+            </Disclosure>
+          )}
+          {subCategories?.length > 0 && (
+            <Disclosure
+              defaultExpanded={subCategoryId ? true : false}
+              className="group"
+            >
+              <Heading>
+                <Button
+                  slot="trigger"
+                  className="bg-surface-bright text-on-surface-variant group-data-expanded:text-on-surface hover:bg-surface-dim flex w-full items-center justify-between rounded-lg px-3 py-2 transition-all ease-out group-data-expanded:rounded-b-none"
+                >
+                  Sub Category {subCategoryId && '(1)'}
+                  <ChevronDown
+                    className="transition group-data-expanded:-rotate-180"
+                    size={18}
+                  />
+                </Button>
+              </Heading>
+              <DisclosurePanel>
+                <RadioGroup
+                  className="my-2 flex flex-col gap-1.5"
+                  aria-label="sub category"
+                  name="subCategory"
+                  value={subCategoryId ?? 'null'}
+                >
+                  {subCategories?.map((subCategory) => {
+                    return (
+                      <Radio
+                        key={subCategory.id}
+                        className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                        value={String(subCategory.id)}
+                        onClick={() => {
+                          if (String(subCategory.id) === subCategoryId) {
+                            handleFilterChange(setSubCategoryId, null);
+                          } else {
+                            handleFilterChange(setSubCategoryId, String(subCategory.id));
+                          }
+                        }}
+                      >
+                        <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
+                          <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
+                        </div>
+                        {subCategory.name}
+                      </Radio>
+                    );
+                  })}
+                </RadioGroup>
+              </DisclosurePanel>
+            </Disclosure>
+          )}
+          <Disclosure
+            defaultExpanded={false}
             className="group"
           >
             <Heading>
@@ -89,7 +251,7 @@ export function Filter() {
                 value={priceRangeId ?? 'null'}
               >
                 <Radio
-                  className="bg-surface-bright group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="1"
                   onClick={() => {
                     if ('1' === priceRangeId) {
@@ -100,12 +262,12 @@ export function Filter() {
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   $0 - $25
                 </Radio>
                 <Radio
-                  className="bg-surface-bright text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="2"
                   onClick={() => {
                     if ('2' === priceRangeId) {
@@ -116,12 +278,12 @@ export function Filter() {
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   $25 - $50
                 </Radio>
                 <Radio
-                  className="bg-surface-bright text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="3"
                   onClick={() => {
                     if ('3' === priceRangeId) {
@@ -132,12 +294,12 @@ export function Filter() {
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   $50 - $100
                 </Radio>
                 <Radio
-                  className="bg-surface-bright text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="4"
                   onClick={() => {
                     if ('4' === priceRangeId) {
@@ -148,12 +310,12 @@ export function Filter() {
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   $100 - $150
                 </Radio>
                 <Radio
-                  className="bg-surface-bright text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high text-on-surface-variant group hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="5"
                   onClick={() => {
                     if ('5' === priceRangeId) {
@@ -164,7 +326,7 @@ export function Filter() {
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   Over 150
                 </Radio>
@@ -195,38 +357,38 @@ export function Filter() {
                 value={clothingGenderId}
               >
                 <Checkbox
-                  className="bg-surface-bright group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="1"
                   onClick={() => {
                     setGenderIdWithValue('1');
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   Men
                 </Checkbox>
                 <Checkbox
-                  className="bg-surface-bright group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="2"
                   onClick={() => {
                     setGenderIdWithValue('2');
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   Women
                 </Checkbox>
                 <Checkbox
-                  className="bg-surface-bright group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
+                  className="bg-surface-container-high group text-on-surface-variant hover:bg-surface-dim flex items-center gap-2 rounded-md px-2 py-2 text-sm transition ease-out"
                   value="3"
                   onClick={() => {
                     setGenderIdWithValue('3');
                   }}
                 >
                   <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint h-4.5 w-4.5 rounded border p-0.5">
-                    <Check className="invisible h-full w-full stroke-white group-data-selected:visible" />
+                    <Check className="stroke-surface-bright invisible h-full w-full group-data-selected:visible" />
                   </div>
                   Unisex
                 </Checkbox>
