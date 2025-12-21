@@ -139,7 +139,7 @@ export function Header() {
             {isAuth && (
               <Link
                 to="/basket"
-                className="bg-surface-bright relative grid place-content-center rounded-full p-3"
+                className="bg-surface-bright hover:bg-surface-dim relative grid place-content-center rounded-full p-3 transition ease-out"
               >
                 <ShoppingCartIcon className="stroke-on-surface-variant aspect-square w-6" />
                 {cartCount !== 0 && (
@@ -152,7 +152,7 @@ export function Header() {
             {isAuth && (
               <Link
                 to="/favourites"
-                className="bg-surface-bright relative grid place-content-center rounded-full p-3"
+                className="bg-surface-bright hover:bg-surface-dim relative grid place-content-center rounded-full p-3 transition ease-out"
               >
                 <Heart className="stroke-on-surface-variant aspect-square w-6" />
                 {loaderData.favourites.data.totalCount !== 0 && (

@@ -42,7 +42,10 @@ export function AddNewAddress() {
         </div>
       </DialogTrigger>
       <DialogContent className="minimalist-scrollbar max-h-10/12 overflow-auto border-none">
-        <fetcher.Form method="POST">
+        <fetcher.Form
+          method="POST"
+          action="/settings/addresses"
+        >
           <DialogHeader>
             <DialogTitle>Add new address</DialogTitle>
             <DialogDescription>

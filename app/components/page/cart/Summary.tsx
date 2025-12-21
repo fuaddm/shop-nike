@@ -122,7 +122,7 @@ export function Summary() {
   );
 }
 export function SimpleSummary() {
-  const loaderData = useLoaderData();
+  const { summary } = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
   const fetcher = useFetcher();
 
@@ -145,7 +145,7 @@ export function SimpleSummary() {
       <div className="mb-6 text-3xl font-medium">In Your Bag</div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Subtotal</div>
-        <div className="font-medium">${loaderData.data.subtotal}</div>
+        <div className="font-medium">${summary.data.subtotal}</div>
       </div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Shipping</div>
@@ -153,13 +153,13 @@ export function SimpleSummary() {
       </div>
       <div className="text-on-surface-variant mb-4 flex justify-between px-2">
         <div>Discount</div>
-        <div className="font-medium">${loaderData.data.discountAmount}</div>
+        <div className="font-medium">${summary.data.discountAmount}</div>
       </div>
       <div className="border-outline-variant text-on-surface flex justify-between border-t px-2 py-3 text-lg font-medium">
         <div>Total</div>
-        <div className="font-medium">${loaderData.data.totalPrice}</div>
+        <div className="font-medium">${summary.data.totalPrice}</div>
       </div>
-      {loaderData.data.promoCodeError && <div className="text-error mb-3">{loaderData.data.promoCodeError}</div>}
+      {summary.data.promoCodeError && <div className="text-error mb-3">{summary.data.promoCodeError}</div>}
     </div>
   );
 }

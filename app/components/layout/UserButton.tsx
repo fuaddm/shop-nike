@@ -1,4 +1,4 @@
-import { UserIcon } from 'lucide-react';
+import { UserCog, UserIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { Button } from 'react-aria-components';
 import { Link, useFetcher, useLoaderData } from 'react-router';
@@ -19,8 +19,8 @@ export function UserButton() {
 
   if (isAuth) {
     return (
-      <div className="bg-surface-bright group relative grid place-content-center rounded-full p-3">
-        <UserIcon className="stroke-on-surface-variant aspect-square w-6" />
+      <div className="bg-surface-bright hover:bg-surface-dim group relative grid place-content-center rounded-full p-3 transition ease-out">
+        <UserCog className="stroke-on-surface-variant aspect-square w-6" />
         <div
           className={cn({
             'absolute top-full -right-3 z-100 min-w-[240px] p-3': true,

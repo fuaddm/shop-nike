@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { Link, useFetcher, useRouteLoaderData } from 'react-router';
+import { toast } from 'sonner';
 import { getTitle } from '~/routes/products-home';
 
 import { HeartIcon } from '@icons/HeartIcon';
@@ -11,7 +12,7 @@ import type { IProduct } from '@models/product';
 
 export function ProductCard(properties: IProduct) {
   const { id, name, image, variations, pricing, category, mainCategory } = properties;
-  const { hierarchy, favourites } = useRouteLoaderData('root');
+  const { hierarchy, favourites, user } = useRouteLoaderData('root');
   const hierarchies = hierarchy.data.hierarchies;
   const subTitle = getTitle(hierarchies, mainCategory.id, category.id);
   const fetcher = useFetcher();
@@ -47,19 +48,23 @@ export function ProductCard(properties: IProduct) {
         </Link>
         <Button
           onPress={() => {
-            const formData = new FormData();
-            formData.append('variationCode', variations[0].code);
-            fetcher.submit(formData, {
-              method: 'POST',
-              action: '/favourites',
-            });
+            if (user?.isAuth) {
+              const formData = new FormData();
+              formData.append('variationCode', variations[0].code);
+              fetcher.submit(formData, {
+                method: 'POST',
+                action: '/favourites',
+              });
+            } else {
+              toast.warning('Sign in to save');
+            }
           }}
           className="bg-surface-container/40 hover:bg-surface-container-highest border-outline-variant absolute top-6 right-5 w-8 cursor-default rounded-full border p-1.5 transition"
         >
           <HeartIcon
             className={cn({
               'stroke-on-surface h-full w-full fill-transparent transition-all': true,
-              'fill-red-500 stroke-red-500': isFavourite,
+              'fill-red-500 stroke-red-500': fetcher.formData?.get('variationCode') ? !isFavourite : isFavourite,
             })}
           />
         </Button>

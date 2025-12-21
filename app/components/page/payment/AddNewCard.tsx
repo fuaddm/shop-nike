@@ -16,7 +16,9 @@ import {
 } from '@ui/Dialog';
 import { PrimaryButton } from '@ui/button/PrimaryButton';
 
-export function AddNewCard() {
+import { cn } from '@libs/cn';
+
+export function AddNewCard({ isCheckout = false }: { isCheckout?: boolean }) {
   const [open, setOpen] = useState(false);
   const fetcher = useFetcher();
   const loading = fetcher.state !== 'idle';
@@ -36,12 +38,21 @@ export function AddNewCard() {
       onOpenChange={setOpen}
     >
       <DialogTrigger>
-        <div className="bg-surface-container hover:bg-surface-container-high grid aspect-[1.586/1] place-items-center rounded-md border border-dashed border-gray-500 text-center font-medium transition">
+        <div
+          className={cn({
+            'bg-surface-container hover:bg-surface-container-high grid aspect-[1.586/1] place-items-center rounded-md border border-dashed border-gray-500 text-center font-medium transition': true,
+            'aspect-[1.586/1]': !isCheckout,
+            'h-18 w-full': isCheckout,
+          })}
+        >
           Add new card
         </div>
       </DialogTrigger>
       <DialogContent className="border-none">
-        <fetcher.Form method="POST">
+        <fetcher.Form
+          method="POST"
+          action="/settings/payment"
+        >
           <DialogHeader>
             <DialogTitle>Add new card</DialogTitle>
             <DialogDescription>

@@ -19,7 +19,7 @@ export function Menu({ ref, mouseOut, selectedMainCategoryId, ...properties }: I
     <div
       ref={ref}
       className={cn({
-        'invisible absolute top-full left-0 z-20 h-[calc(100vh-100%)] w-full overflow-hidden': true,
+        'invisible absolute top-full left-0 z-20 h-screen w-full overflow-hidden': true,
         visible: isOpen,
       })}
       {...properties}

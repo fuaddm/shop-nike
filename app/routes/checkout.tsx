@@ -13,14 +13,17 @@ import { toast } from 'sonner';
 import { userContext } from '~/context/user-context';
 import { userCookie } from '~/cookies.server';
 
+import { AddNewAddress } from '@components/page/addresses/AddNewAddress';
 import { SimpleAddressCard, SkeletonAddressCard } from '@components/page/addresses/AddressCard';
 import { SimpleCartItem } from '@components/page/cart/CartItem';
 import { SimpleSummary } from '@components/page/cart/Summary';
+import { AddNewCard } from '@components/page/payment/AddNewCard';
 import { SimpleCreditCard, SkeletonCreditCard } from '@components/page/payment/CreditCard';
 
 import { cn } from '@libs/cn';
 
 import { authAPI } from '@api/auth-api';
+import { mainAPI } from '@api/config';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get('Cookie');
@@ -31,14 +34,19 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   if (!user?.isAuth) {
     return redirect('/');
   } else {
+    const countryAndRegionResp = await mainAPI.get('/user/countries_and_regions', {
+      headers: {
+        token: cookie.privateToken,
+      },
+    });
     if (promoCodeId) {
       const resp = await authAPI.get(`/user/total-price?promoCodeId=${promoCodeId}`, cookie);
       const data = await resp.json();
-      return data;
+      return { summary: data, countriesAndRegions: countryAndRegionResp.data.data };
     } else {
       const resp = await authAPI.get('/user/total-price', cookie);
       const data = await resp.json();
-      return data;
+      return { summary: data, countriesAndRegions: countryAndRegionResp.data.data };
     }
   }
 }
@@ -143,11 +151,12 @@ export default function CheckoutPage() {
                   <SkeletonAddressCard />
                 </>
               )}
+              <AddNewAddress />
             </div>
           </div>
           <div className="flex flex-col gap-4">
             <div className="text-xl font-medium">Saved payment methods</div>
-            <div className="mb-4 grid w-fit grid-cols-1 gap-3">
+            <div className="mb-4 grid w-fit grid-cols-1 items-start gap-3 md:grid-cols-2">
               {paymentFetcher.data?.data &&
                 paymentFetcher.data.data.map((card) => {
                   return (
@@ -174,6 +183,7 @@ export default function CheckoutPage() {
                   <SkeletonCreditCard cardType="Mastercard" />
                 </>
               )}
+              <AddNewCard isCheckout={true} />
             </div>
           </div>
         </div>
