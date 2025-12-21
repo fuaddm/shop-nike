@@ -33,7 +33,6 @@ export function Filter() {
   const [colorId, setColorId] = useQueryState('ColorId', parseAsNativeArrayOf(parseAsString));
   const [pageNumber, setPageNumber] = useQueryState('PageNumber', {
     defaultValue: '1',
-    scroll: true,
   });
 
   const handleFilterChange = (setter, newValue) => {
