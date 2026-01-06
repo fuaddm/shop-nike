@@ -30,7 +30,6 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
 export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const orderData = loaderData.data.data;
   const [orderDate, setOrderDate] = useState('');
-  console.log(orderData);
 
   useEffect(() => {
     setOrderDate(new Date(orderData.orderDate + 'Z').toLocaleString());

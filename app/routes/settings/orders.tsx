@@ -28,7 +28,6 @@ export default function Orders({ loaderData }: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-4">
       {loaderData.orders?.data?.map((order) => {
-        console.log(order);
         return (
           <OrderCard
             key={order.order_id}

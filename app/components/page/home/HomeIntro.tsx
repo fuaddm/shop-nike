@@ -34,7 +34,7 @@ export function HomeIntro() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <Poster
           suptitle="Nike Tech Woven"
           title="Built to Move Different"

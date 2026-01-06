@@ -7,7 +7,6 @@ import { Logo } from '@components/page/shared/Logo';
 export function Footer() {
   const loaderData = useLoaderData<typeof loader>();
   const mainCategories = loaderData.hierarchy.data.hierarchies;
-  console.log(mainCategories);
 
   return (
     <div className="bg-surface-container-low sticky top-full left-0 mt-10 pt-8 pb-6">

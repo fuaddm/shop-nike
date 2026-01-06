@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 export function HomePosters() {
   return (
-    <div className="container grid grid-cols-2 gap-4">
+    <div className="container grid grid-cols-1 gap-4 md:grid-cols-2">
       <Poster
         suptitle="Winter Wear"
         title="Layers For Chriller Days"
@@ -33,7 +33,7 @@ export function HomePosters() {
 
 export function Poster({ image, suptitle, title, to }: { image: string; suptitle: string; title: string; to: string }) {
   return (
-    <div className="bg-surface-container relative flex aspect-square items-end justify-start p-12">
+    <div className="bg-surface-container relative flex aspect-square items-end justify-start p-4 md:p-8 lg:p-12">
       <div className="w-ful absolute top-0 left-0 h-full">
         <img
           className="h-full w-full object-cover"
@@ -41,12 +41,12 @@ export function Poster({ image, suptitle, title, to }: { image: string; suptitle
           alt=""
         />
       </div>
-      <div className="relative z-10 flex w-full flex-col gap-3 text-white">
+      <div className="relative z-10 flex w-full flex-col gap-1 text-white lg:gap-3">
         <div className="font-medium">{suptitle}</div>
-        <div className="mb-2 w-full max-w-2/3 text-4xl font-medium">{title}</div>
+        <div className="mb-2 w-full text-xl font-medium md:text-2xl lg:max-w-2/3 lg:text-4xl">{title}</div>
         <Link
           to={to}
-          className="block w-fit rounded-full bg-white px-5 py-1.5 font-semibold text-black"
+          className="block w-fit rounded-full bg-white px-3 py-1 font-semibold text-black lg:px-5 lg:py-1.5"
         >
           Shop
         </Link>

@@ -89,7 +89,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function BasketPage() {
   const { cart } = useRouteLoaderData('root');
-  console.log(cart);
   const numberOfSelectedItems = cart.data.filter((item: any) => item.is_selected).length;
 
   return (
