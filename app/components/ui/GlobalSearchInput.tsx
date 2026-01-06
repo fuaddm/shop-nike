@@ -1,5 +1,4 @@
-import { Search } from 'lucide-react';
-import { Button, Input, type InputProps } from 'react-aria-components';
+import { Input, type InputProps } from 'react-aria-components';
 
 import { cn } from '@libs/cn';
 

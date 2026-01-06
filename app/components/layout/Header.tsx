@@ -87,48 +87,46 @@ export function Header() {
 
   return (
     <div className="relative mb-18">
-      <div className="container py-1.5">
-        <div className="flex justify-between">
-          <div className="flex gap-4">
-            <Link
-              className="group"
-              to="/products?MainCategoryId=11&CategoryId=13&SubCategoryId=1022"
-            >
-              <JordanIcon className="group-hover:fill-on-surface-variant fill-on-surface aspect-square h-6" />
-            </Link>
-            <Link
-              className="group"
-              to="/products?MainCategoryId=11&CategoryId=13&SubCategoryId=1020"
-            >
-              <ConverseIcon className="group-hover:fill-on-surface-variant fill-on-surface aspect-square h-6" />
-            </Link>
-          </div>
-          <div className="flex items-center gap-x-4">
-            <Link
-              to="/page/get-help"
-              className="hover:text-on-surface-variant"
-            >
-              Help
-            </Link>
-            <div className="bg-outline-variant h-[16px] w-px"></div>
-            <Link
-              to="/page/contact-us"
-              className="hover:text-on-surface-variant"
-            >
-              Join Us
-            </Link>
-            {!isAuth && (
-              <>
-                <div className="bg-outline-variant h-[16px] w-px"></div>
-                <Button
-                  className="cursor-pointer"
-                  onPress={() => setIsAuthModalOpen(true)}
-                >
-                  Sign in
-                </Button>
-              </>
-            )}
-          </div>
+      <div className="container flex justify-between py-1.5">
+        <div className="flex gap-4">
+          <Link
+            className="group"
+            to="/products?MainCategoryId=11&CategoryId=13&SubCategoryId=1022"
+          >
+            <JordanIcon className="group-hover:fill-on-surface-variant fill-on-surface aspect-square h-6" />
+          </Link>
+          <Link
+            className="group"
+            to="/products?MainCategoryId=11&CategoryId=13&SubCategoryId=1020"
+          >
+            <ConverseIcon className="group-hover:fill-on-surface-variant fill-on-surface aspect-square h-6" />
+          </Link>
+        </div>
+        <div className="flex items-center gap-x-4">
+          <Link
+            to="/page/get-help"
+            className="hover:text-on-surface-variant"
+          >
+            Help
+          </Link>
+          <div className="bg-outline-variant h-[16px] w-px"></div>
+          <Link
+            to="/page/contact-us"
+            className="hover:text-on-surface-variant"
+          >
+            Join Us
+          </Link>
+          {!isAuth && (
+            <>
+              <div className="bg-outline-variant h-[16px] w-px"></div>
+              <Button
+                className="cursor-pointer"
+                onPress={() => setIsAuthModalOpen(true)}
+              >
+                Sign in
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <div
@@ -136,12 +134,12 @@ export function Header() {
           'bg-surface-container-low w-full': true,
         })}
       >
-        <div className="bg-surface-container-low container grid grid-cols-2 items-center gap-16 py-3 lg:grid-cols-3 lg:py-0">
+        <div className="bg-surface-container-low container grid grid-cols-2 items-center gap-16 py-3 xl:grid-cols-3 xl:py-0">
           <Logo />
           <div
             ref={navReference}
             onMouseOut={mouseOut}
-            className="relative z-0 hidden h-[72px] w-fit items-center justify-center justify-self-center lg:flex"
+            className="relative z-0 hidden h-[72px] w-fit items-center justify-center justify-self-center xl:flex"
           >
             {loaderData.hierarchy &&
               loaderData.hierarchy.data.hierarchies.map((mainCategory) => {
@@ -161,16 +159,27 @@ export function Header() {
               })}
           </div>
           <div className="flex items-center justify-end gap-3">
-            <GlobalSearchInput
-              key={search}
-              defaultValue={location.pathname === '/products' ? search : ''}
-              name="global-search"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setGlobalSearch(e.target.value);
-                }
-              }}
-            />
+            <Button
+              onPress={() => setIsOpen((previous) => !previous)}
+              className={cn({
+                'bg-surface-bright block aspect-square rounded-full p-3 transition xl:hidden': true,
+                '-rotate-90': isOpen,
+              })}
+            >
+              <MenuIcon className="stroke-on-surface-variant aspect-square w-6" />
+            </Button>
+            <div className="hidden xl:block">
+              <GlobalSearchInput
+                key={search}
+                defaultValue={location.pathname === '/products' ? search : ''}
+                name="global-search"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setGlobalSearch(e.target.value);
+                  }
+                }}
+              />
+            </div>
             {isAuth && (
               <Link
                 to="/basket"
@@ -198,15 +207,6 @@ export function Header() {
               </Link>
             )}
             <UserButton />
-            <Button
-              onPress={() => setIsOpen((previous) => !previous)}
-              className={cn({
-                'bg-surface-bright block aspect-square rounded-full p-3 transition lg:hidden': true,
-                '-rotate-90': isOpen,
-              })}
-            >
-              <MenuIcon className="stroke-on-surface-variant aspect-square w-6" />
-            </Button>
           </div>
         </div>
         <Menu
