@@ -1,6 +1,6 @@
 import { createSerializer, parseAsNativeArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useCallback, useEffect, useState } from 'react';
-import { useFetcher, useNavigation, useRouteLoaderData } from 'react-router';
+import { useFetcher, useLocation, useNavigation, useRouteLoaderData } from 'react-router';
 import { PAGE_SIZE } from '~/routes/products-data';
 
 import { SearchInput } from '@ui/input/SearchInput';
@@ -61,8 +61,16 @@ export function getTitle(hierarchies, mainCategoryId?: number, categoryId?: numb
 export default function ProductsPage() {
   const rootLoaderData = useRouteLoaderData('root');
   const navigation = useNavigation();
+  const location = useLocation();
 
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions({ shallow: true }));
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    if (searchParams.get('search') !== search) {
+    }
+  }, [location]);
 
   const fetcher = useFetcher();
   const [products, setProducts] = useState([]);
@@ -140,6 +148,7 @@ export default function ProductsPage() {
       <h2 className="mb-6 text-center text-2xl font-semibold">{titleOfPage}</h2>
       <div className="mb-4 flex items-center justify-end gap-3">
         <SearchInput
+          key={search}
           defaultValue={search}
           name="search"
           onChange={(e) => debouncedSearch(e.target.value)}

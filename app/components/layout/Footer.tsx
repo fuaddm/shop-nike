@@ -1,9 +1,14 @@
 import { ThemeSwitch } from '@layout/ThemeSwitch';
-import { Link } from 'react-router';
+import { Link, useLoaderData } from 'react-router';
+import type { loader } from '~/root';
 
 import { Logo } from '@components/page/shared/Logo';
 
 export function Footer() {
+  const loaderData = useLoaderData<typeof loader>();
+  const mainCategories = loaderData.hierarchy.data.hierarchies;
+  console.log(mainCategories);
+
   return (
     <div className="bg-surface-container-low sticky top-full left-0 mt-10 pt-8 pb-6">
       <div className="container">
@@ -49,36 +54,17 @@ export function Footer() {
               >
                 All products
               </Link>
-              <Link
-                to="/products?MainCategoryId=11"
-                className="text-on-surface-variant hover:text-on-surface text-sm"
-              >
-                Men&apos;s products
-              </Link>
-              <Link
-                to="/products?MainCategoryId=12"
-                className="text-on-surface-variant hover:text-on-surface text-sm"
-              >
-                Women&apos;s products
-              </Link>
-              <Link
-                to="/products?MainCategoryId=13"
-                className="text-on-surface-variant hover:text-on-surface text-sm"
-              >
-                Kid&apos;s products
-              </Link>
-              <Link
-                to="/products?MainCategoryId=28"
-                className="text-on-surface-variant hover:text-on-surface text-sm"
-              >
-                New products
-              </Link>
-              <Link
-                to="/products?MainCategoryId=27"
-                className="text-on-surface-variant hover:text-on-surface text-sm"
-              >
-                Sport products
-              </Link>
+              {mainCategories.map((mainCategory) => {
+                return (
+                  <Link
+                    key={mainCategory.id}
+                    to={`/products?MainCategoryId=${mainCategory.id}`}
+                    className="text-on-surface-variant hover:text-on-surface text-sm"
+                  >
+                    {mainCategory.name}&apos;s products
+                  </Link>
+                );
+              })}
             </div>
             <div className="flex flex-col gap-2">
               <div className="text-sm font-semibold">Help</div>

@@ -22,6 +22,35 @@ export function AddNewAddress() {
   const fetcher = useFetcher({ key: 'address' });
   const loading = fetcher.state !== 'idle';
 
+  const [localForm, setLocalForm] = useState({
+    firstName: '',
+    lastName: '',
+    streetAddress: '',
+    streetAddressSecond: '',
+    state: '',
+    country: '',
+    city: '',
+    zipCode: '',
+    phoneNumber: '',
+  });
+
+  useEffect(() => {
+    if (sessionStorage) {
+      const prevAddress = sessionStorage.getItem('addNewAddress')
+        ? JSON.parse(sessionStorage.getItem('addNewAddress'))
+        : null;
+      if (prevAddress) {
+        setLocalForm(prevAddress);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sessionStorage) {
+      sessionStorage.setItem('addNewAddress', JSON.stringify(localForm));
+    }
+  }, [localForm]);
+
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data?.success) {
       toast.success('Address added successfully');
@@ -63,11 +92,20 @@ export function AddNewAddress() {
               <div className="grid gap-1">
                 <Label htmlFor="first-name">First name*</Label>
                 <Input
+                  defaultValue={localForm.firstName}
                   id="first-name"
                   name="first-name"
                   disabled={loading}
                   className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                   placeholder="John"
+                  onChange={(e) => {
+                    setLocalForm((prev) => {
+                      return {
+                        ...prev,
+                        firstName: e.target.value,
+                      };
+                    });
+                  }}
                 />
                 {fetcher.data?.errors && fetcher.data?.errors.firstName && (
                   <div className="text-red-600">{fetcher.data?.errors.firstName}</div>
@@ -76,11 +114,20 @@ export function AddNewAddress() {
               <div className="grid gap-1">
                 <Label htmlFor="last-name">Last name*</Label>
                 <Input
+                  defaultValue={localForm.lastName}
                   id="last-name"
                   name="last-name"
                   disabled={loading}
                   className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                   placeholder="Wick"
+                  onChange={(e) => {
+                    setLocalForm((prev) => {
+                      return {
+                        ...prev,
+                        lastName: e.target.value,
+                      };
+                    });
+                  }}
                 />
                 {fetcher.data?.errors && fetcher.data?.errors.lastName && (
                   <div className="text-red-600">{fetcher.data?.errors.lastName}</div>
@@ -90,11 +137,20 @@ export function AddNewAddress() {
             <div className="mb-4 grid gap-1">
               <Label htmlFor="street-address">Street Address*</Label>
               <Input
+                defaultValue={localForm.streetAddress}
                 id="street-address"
                 name="street-address"
                 disabled={loading}
                 className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                 placeholder="123 Main Street"
+                onChange={(e) => {
+                  setLocalForm((prev) => {
+                    return {
+                      ...prev,
+                      streetAddress: e.target.value,
+                    };
+                  });
+                }}
               />
               {fetcher.data?.errors && fetcher.data?.errors.streetAddress && (
                 <div className="text-red-600">{fetcher.data?.errors.streetAddress}</div>
@@ -103,11 +159,20 @@ export function AddNewAddress() {
             <div className="mb-4 grid gap-1">
               <Label htmlFor="street-address-second">Apt, Suite, Building</Label>
               <Input
+                defaultValue={localForm.streetAddressSecond}
                 id="street-address-second"
                 name="street-address-second"
                 disabled={loading}
                 className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                 placeholder="123 Main St, BLDG C, STE 201"
+                onChange={(e) => {
+                  setLocalForm((prev) => {
+                    return {
+                      ...prev,
+                      streetAddressSecond: e.target.value,
+                    };
+                  });
+                }}
               />
               {fetcher.data?.errors && fetcher.data?.errors.streetSecondAddress && (
                 <div className="text-red-600">{fetcher.data?.errors.streetSecondAddress}</div>
@@ -118,11 +183,20 @@ export function AddNewAddress() {
               <div className="grid gap-1">
                 <Label htmlFor="city">City*</Label>
                 <Input
+                  defaultValue={localForm.city}
                   id="city"
                   name="city"
                   disabled={loading}
                   className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                   placeholder="New York City"
+                  onChange={(e) => {
+                    setLocalForm((prev) => {
+                      return {
+                        ...prev,
+                        city: e.target.value,
+                      };
+                    });
+                  }}
                 />
                 {fetcher.data?.errors && fetcher.data?.errors.city && (
                   <div className="text-red-600">{fetcher.data?.errors.city}</div>
@@ -131,11 +205,20 @@ export function AddNewAddress() {
               <div className="grid gap-1">
                 <Label htmlFor="zip">Zip*</Label>
                 <Input
+                  defaultValue={localForm.zipCode}
                   id="zip"
                   name="zip"
                   disabled={loading}
                   className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                   placeholder=""
+                  onChange={(e) => {
+                    setLocalForm((prev) => {
+                      return {
+                        ...prev,
+                        zipCode: e.target.value,
+                      };
+                    });
+                  }}
                 />
                 {fetcher.data?.errors && fetcher.data?.errors.zip && (
                   <div className="text-red-600">{fetcher.data?.errors.zip}</div>
@@ -145,11 +228,20 @@ export function AddNewAddress() {
             <div className="grid gap-1">
               <Label htmlFor="phone-number">Phone number*</Label>
               <Input
+                defaultValue={localForm.phoneNumber}
                 id="phone-number"
                 name="phone-number"
                 disabled={loading}
                 className="bg-surface-container min-w-0 rounded-md px-3 py-2 font-mono focus:outline-none"
                 placeholder="+1 (212) 456-7890"
+                onChange={(e) => {
+                  setLocalForm((prev) => {
+                    return {
+                      ...prev,
+                      phoneNumber: e.target.value,
+                    };
+                  });
+                }}
               />
               {fetcher.data?.errors && fetcher.data?.errors.phoneNumber && (
                 <div className="text-red-600">{fetcher.data?.errors.phoneNumber}</div>

@@ -52,10 +52,12 @@ export default function MyProfile() {
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data?.success) {
       toast.success('Changed successfully');
-    } else if (fetcher.state === 'idle' && fetcher.data?.success === false) {
+    } else if (fetcher.state === 'idle' && fetcher.data?.success === false && !fetcher.data?.errors) {
       toast.error('Something went wrong. Please try again');
     }
   }, [fetcher]);
+
+  const errors = fetcher.data?.success === false ? fetcher.data?.errors : undefined;
 
   return (
     <div>
@@ -80,6 +82,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.name} />
         </div>
         <div className="grid gap-1">
           <Label>Surname</Label>
@@ -89,6 +92,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.surname} />
         </div>
         <div className="grid gap-1">
           <Label>Birth Date</Label>
@@ -99,6 +103,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.birthDate} />
         </div>
         <div className="grid gap-1">
           <Label>Phone number</Label>
@@ -108,6 +113,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.phoneNumber} />
         </div>
         <div className="grid gap-1">
           <Label>City</Label>
@@ -117,6 +123,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.city} />
         </div>
         <div className="grid gap-1">
           <Label>Zip code</Label>
@@ -126,6 +133,7 @@ export default function MyProfile() {
             placeholder="Optional"
             className="bg-surface-container rounded-md px-3 py-2 font-mono focus:outline-none"
           />
+          <FieldError message={errors?.zipCode} />
         </div>
         <CountryAndRegion
           state={userData?.data?.location_id}
@@ -167,3 +175,8 @@ export default function MyProfile() {
     </div>
   );
 }
+
+const FieldError = ({ message }: { message?: string[] | string }) => {
+  if (!message) return null;
+  return <p className="text-error mt-1 text-xs">{Array.isArray(message) ? message[0] : message}</p>;
+};

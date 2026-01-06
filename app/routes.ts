@@ -21,6 +21,7 @@ export default [
     route('payment', './routes/settings/payment.tsx'),
     route('addresses', 'routes/settings/addresses.tsx'),
     route('orders', 'routes/settings/orders.tsx'),
+    route('order/:orderId', 'routes/settings/order.tsx'),
     route('edit-my-profile', 'routes/settings/edit-my-profile.tsx'),
     route('delete-my-profile', 'routes/settings/delete-my-profile.tsx'),
   ]),

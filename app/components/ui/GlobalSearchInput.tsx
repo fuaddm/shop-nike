@@ -3,7 +3,7 @@ import { Button, Input, type InputProps } from 'react-aria-components';
 
 import { cn } from '@libs/cn';
 
-export function SearchInput(properties: InputProps) {
+export function GlobalSearchInput(properties: InputProps) {
   const { className, ...rest } = properties;
 
   return (
@@ -16,13 +16,10 @@ export function SearchInput(properties: InputProps) {
         id="header-search"
         placeholder="Search..."
         className={cn(
-          'bg-surface-container text-on-surface w-full rounded-xl px-4 py-3 text-sm focus:outline-none',
+          'bg-surface-container-high text-on-surface w-full rounded-xl px-4 py-3 text-sm focus:outline-none',
           className
         )}
       />
-      <Button>
-        <Search className="stroke-on-surface hover:bg-surface-container-high absolute top-1/2 right-1 box-content h-[calc(100%-8px)] w-4 -translate-y-1/2 rounded-xl px-4 transition ease-out" />
-      </Button>
     </label>
   );
 }

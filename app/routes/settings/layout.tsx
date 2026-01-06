@@ -11,7 +11,7 @@ export default function Layout() {
   return (
     <div className="container pt-12">
       <div className="grid grid-cols-[400px_1fr] gap-12">
-        <div className="bg-surface-container flex h-fit flex-col gap-0.5 rounded-md p-4">
+        <div className="bg-surface-container sticky top-10 flex h-fit flex-col gap-0.5 rounded-md p-4">
           <Link
             to="/settings"
             className={cn({

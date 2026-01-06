@@ -62,6 +62,18 @@ export async function action({ request }: ActionFunctionArgs) {
       return { success: false };
     }
     return { success: true };
+  } else if (actionName === 'toggle-is-selected') {
+    const searchParams = new URLSearchParams({
+      cartItemId,
+    });
+
+    const resp = await authAPI.patch(`/user/toggle-is-selected?${searchParams.toString()}`, cookie);
+    const data = await resp.json();
+
+    if (data.result.status === false) {
+      return { success: false };
+    }
+    return { success: true };
   } else if (actionName === 'promocode') {
     const resp = await authAPI.post(`/user/validate-promo-code?promoCodeId=${promocode}`, cookie);
     const data = await resp.json();
@@ -77,36 +89,44 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function BasketPage() {
   const { cart } = useRouteLoaderData('root');
+  console.log(cart);
+  const numberOfSelectedItems = cart.data.filter((item: any) => item.is_selected).length;
 
   return (
     <div className="container pt-12 pb-20">
       <div className="mb-12 text-center text-3xl font-semibold">Basket</div>
       <div className="grid grid-cols-[1fr_450px] gap-6">
-        <div className="flex flex-col gap-2">
-          {cart.data.map((product) => {
-            return (
-              <CartItem
-                key={product.cart_item_id}
-                id={product.cart_item_id}
-                variationCode={product.product_variation_id}
-                name={product.product_name}
-                category={product.main_category}
-                color={product.color}
-                price={product.price}
-                size={product.size}
-                quantity={product.quantity}
-                img={product.first_image}
-              />
-            );
-          })}
-          {cart.data.length === 0 && (
-            <div className="mb-12 grid w-full place-items-center pt-10">
-              <img
-                src="/svg/Empty Cart.svg"
-                className="aspect-square w-50"
-              />
-            </div>
-          )}
+        <div>
+          <div className="mb-2 font-medium">
+            {numberOfSelectedItems} / {cart.data.length} ITEMS SELECTED
+          </div>
+          <div className="flex flex-col gap-2">
+            {cart.data.map((product: any) => {
+              return (
+                <CartItem
+                  key={product.cart_item_id}
+                  id={product.cart_item_id}
+                  isSelected={product.is_selected}
+                  variationCode={product.product_variation_id}
+                  name={product.product_name}
+                  category={product.main_category}
+                  color={product.color}
+                  price={product.price}
+                  size={product.size}
+                  quantity={product.quantity}
+                  img={product.first_image}
+                />
+              );
+            })}
+            {cart.data.length === 0 && (
+              <div className="mb-12 grid w-full place-items-center pt-10">
+                <img
+                  src="/svg/Empty Cart.svg"
+                  className="aspect-square w-50"
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <Summary />

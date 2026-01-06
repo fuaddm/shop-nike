@@ -1,17 +1,30 @@
-import { X } from 'lucide-react';
+import { Tag, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button, Input } from 'react-aria-components';
-import { Link, useFetcher, useLoaderData, useNavigation, useSearchParams } from 'react-router';
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useRouteLoaderData,
+  useSearchParams,
+} from 'react-router';
 import { toast } from 'sonner';
 
 import { cn } from '@libs/cn';
 
 export function Summary() {
+  const { cart } = useRouteLoaderData('root');
+  const cartLength = cart?.data?.length ?? 0;
+
   const loaderData = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigation = useNavigation();
   const fetcher = useFetcher();
   const updateItemQuantityFetcher = useFetcher({ key: 'update-item-quantity' });
+
+  const navigate = useNavigate();
 
   const [promocodeValue, setPromocodeValue] = useState('');
   const [promocodeValidError, setPromocodeValidError] = useState(false);
@@ -95,11 +108,14 @@ export function Summary() {
       {searchParams.get('promocode') && (
         <div
           className={cn({
-            'bg-tertiary-container text-on-tertiary-container mb-3 flex items-center justify-between rounded-lg px-3 py-4': true,
+            'bg-surface-container-high mb-3 flex items-center justify-between rounded-lg py-3 ps-4 pe-2.5': true,
             'opacity-60': loading,
           })}
         >
-          {searchParams.get('promocode')}
+          <Tag className="h-5 w-5" />
+          <div className="font-semibold text-green-600 uppercase dark:text-green-200">
+            {searchParams.get('promocode')}
+          </div>
           <Button
             onPress={() => setSearchParams()}
             className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out"
@@ -109,15 +125,21 @@ export function Summary() {
         </div>
       )}
       {loaderData.data.promoCodeError && <div className="text-error mb-3">{loaderData.data.promoCodeError}</div>}
-      <Link
-        to={searchParams.get('promocode') ? `/checkout?promocode=${searchParams.get('promocode')}` : '/checkout'}
+      <Button
+        isDisabled={cartLength === 0 || loading}
+        onPress={() => {
+          navigate({
+            pathname: '/checkout',
+            search: searchParams.get('promocode') ? `promocode=${searchParams.get('promocode')}` : '',
+          });
+        }}
         className={cn({
           'bg-primary text-on-primary block w-full rounded-xl py-3.5 text-center transition ease-out hover:opacity-80': true,
-          'pointer-events-none opacity-60': loading,
+          'disabled:pointer-events-none disabled:opacity-60': true,
         })}
       >
         Checkout
-      </Link>
+      </Button>
     </div>
   );
 }

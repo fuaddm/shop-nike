@@ -1,10 +1,13 @@
 import { Menu } from '@layout/Menu';
 import { UserButton } from '@layout/UserButton';
 import { Heart, Menu as MenuIcon, ShoppingCartIcon } from 'lucide-react';
+import { parseAsString, useQueryState } from 'nuqs';
 import { type MouseEvent, useEffect, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
-import { Link, useLoaderData } from 'react-router';
+import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
 import type { loader } from '~/root';
+
+import { GlobalSearchInput } from '@ui/GlobalSearchInput';
 
 import { Logo } from '@components/page/shared/Logo';
 
@@ -21,11 +24,33 @@ export function Header() {
   const isAuth = loaderData.user?.isAuth;
   const cartCount = loaderData.cart?.data.length ?? 0;
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  function setGlobalSearch(searchValue: string) {
+    if (location.pathname !== '/products') {
+      navigate({
+        pathname: '/products',
+        search: `search=${searchValue}`,
+      });
+    } else {
+      setSearch(searchValue);
+    }
+  }
+
+  useEffect(() => {
+    if (location.pathname !== '/products') {
+      setSearch('');
+    }
+  }, [location]);
+
   const setIsOpen = useMenuStore((state) => state.setIsOpen);
   const isOpen = useMenuStore((state) => state.isOpen);
   const [selectedMainCategory, setSelectedMainCategoryId] = useState<number | null>(null);
   const isAuthModalOpen = useAuthModalStore((state) => state.isOpen);
   const setIsAuthModalOpen = useAuthModalStore((state) => state.setIsOpen);
+
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions({ shallow: true }));
 
   const menuReference = useRef<HTMLDivElement | null>(null);
   const navReference = useRef<HTMLDivElement | null>(null);
@@ -136,6 +161,16 @@ export function Header() {
               })}
           </div>
           <div className="flex items-center justify-end gap-3">
+            <GlobalSearchInput
+              key={search}
+              defaultValue={location.pathname === '/products' ? search : ''}
+              name="global-search"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setGlobalSearch(e.target.value);
+                }
+              }}
+            />
             {isAuth && (
               <Link
                 to="/basket"

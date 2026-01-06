@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { cn } from '@libs/cn';
@@ -54,6 +55,12 @@ export function OrderCard({
           </div>
           <div className="text-on-surface-variant text-sm">Order ID: {id}</div>
           <div className="text-on-surface-variant text-sm">Update Date: {new Date(date).toLocaleString()}</div>
+          <Link
+            to={`/settings/order/${id}`}
+            className="mt-auto w-fit rounded-lg py-1 underline"
+          >
+            Details
+          </Link>
         </div>
       </div>
     </div>
