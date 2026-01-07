@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
-import { Button, CalendarGrid } from 'react-aria-components';
+import { useEffect, useState } from 'react';
+import { Button } from 'react-aria-components';
 import { Link, useLoaderData } from 'react-router';
 import type { loader } from '~/root';
 
@@ -67,6 +67,13 @@ function MenuMain({ mouseOut, selectedMainCategoryId }: Omit<IMenuProperties, 'r
     return loaderData.hierarchy.data.hierarchies.find((mainCategory) => mainCategory.id === mobileSelectedMainCategory)
       ?.name;
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMobileSelectedMainCategory(null);
+      setMobileSelectedCategory(null);
+    }, 200);
+  }, [isOpen]);
 
   return (
     <>

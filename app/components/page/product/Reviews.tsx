@@ -10,6 +10,8 @@ import { StarIcon } from '@icons/StarIcon';
 
 import { starFillPercentage } from '@libs/star';
 
+import { AllReviews } from './AllReviews';
+
 export function Reviews({ stars, totalReviewCount }: { stars: number; totalReviewCount: number }) {
   const fetcher = useFetcher({ key: 'reviews' });
   const params = useParams();
@@ -22,7 +24,7 @@ export function Reviews({ stars, totalReviewCount }: { stars: number; totalRevie
   return (
     <div>
       <div className="mb-2 text-3xl font-medium">Reviews ({totalReviewCount})</div>
-      <div className="grid grid-cols-[300px_1fr] gap-4">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[300px_1fr] md:gap-4">
         <div className="flex w-fit flex-col">
           <div className="text-[120px] font-bold">{stars}</div>
           <div className="flex gap-1">
@@ -89,17 +91,17 @@ export function Reviews({ stars, totalReviewCount }: { stars: number; totalRevie
                 })}
             </>
           )}
-          {fetcher.data?.my_review && (
+          {fetcher.state === 'idle' && fetcher.data && fetcher.data?.my_review && (
             <Review
               stars={fetcher.data?.my_review.stars}
               date={fetcher.data.my_review.review_date}
               comment={fetcher.data.my_review.review_comment}
-              name={fetcher.data.my_review.reviewer_name ?? 'My Review'}
+              name={fetcher.data.my_review.reviewer_name + ' (Me)' || 'My Review'}
             />
           )}
           {fetcher.state === 'idle' && fetcher.data && (
             <>
-              {fetcher.data.reviews?.map((review) => {
+              {fetcher.data.reviews?.slice(0, 3).map((review) => {
                 return (
                   <Review
                     key={review.review_date}
@@ -112,13 +114,7 @@ export function Reviews({ stars, totalReviewCount }: { stars: number; totalRevie
               })}
             </>
           )}
-          <div className="mt-4 flex justify-center">
-            {fetcher.data?.reviews?.length > 3 && (
-              <Button className="bg-secondary text-on-secondary cursor-pointer rounded-full px-4 py-2 transition ease-out hover:scale-95">
-                Show More
-              </Button>
-            )}
-          </div>
+          <div className="mt-4 flex justify-center">{fetcher.data?.reviews?.length > 3 && <AllReviews />}</div>
         </div>
       </div>
     </div>

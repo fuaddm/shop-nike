@@ -2,7 +2,6 @@ import { Tag, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button, Input } from 'react-aria-components';
 import {
-  Link,
   useFetcher,
   useLoaderData,
   useNavigate,
@@ -16,7 +15,8 @@ import { cn } from '@libs/cn';
 
 export function Summary() {
   const { cart } = useRouteLoaderData('root');
-  const cartLength = cart?.data?.length ?? 0;
+  const cartLength = cart?.data?.items?.length ?? 0;
+  const cartPromocode = cart?.data?.promo_code_id ?? null;
 
   const loaderData = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -105,7 +105,7 @@ export function Summary() {
           Apply
         </Button>
       </fetcher.Form>
-      {searchParams.get('promocode') && (
+      {cartPromocode && (
         <div
           className={cn({
             'bg-surface-container-high mb-3 flex items-center justify-between rounded-lg py-3 ps-4 pe-2.5': true,
@@ -113,13 +113,8 @@ export function Summary() {
           })}
         >
           <Tag className="h-5 w-5" />
-          <div className="font-semibold text-green-600 uppercase dark:text-green-200">
-            {searchParams.get('promocode')}
-          </div>
-          <Button
-            onPress={() => setSearchParams()}
-            className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out"
-          >
+          <div className="font-semibold text-green-600 uppercase dark:text-green-200">{cartPromocode}</div>
+          <Button className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out">
             <X />
           </Button>
         </div>
@@ -130,7 +125,6 @@ export function Summary() {
         onPress={() => {
           navigate({
             pathname: '/checkout',
-            search: searchParams.get('promocode') ? `promocode=${searchParams.get('promocode')}` : '',
           });
         }}
         className={cn({

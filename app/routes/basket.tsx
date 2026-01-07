@@ -89,22 +89,25 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function BasketPage() {
   const { cart } = useRouteLoaderData('root');
-  const numberOfSelectedItems = cart.data.filter((item: any) => item.is_selected).length;
+  const numberOfSelectedItems = cart?.data?.items?.filter((item: any) => item.is_selected)?.length;
 
   return (
     <div className="container pt-12 pb-20">
       <div className="mb-12 text-center text-3xl font-semibold">Basket</div>
       <div className="grid grid-cols-[1fr_450px] gap-6">
         <div>
-          <div className="mb-2 font-medium">
-            {numberOfSelectedItems} / {cart.data.length} ITEMS SELECTED
-          </div>
+          {cart?.data?.items?.length > 0 && (
+            <div className="mb-2 font-medium">
+              {numberOfSelectedItems} / {cart?.data?.items?.length} ITEMS SELECTED
+            </div>
+          )}
           <div className="flex flex-col gap-2">
-            {cart.data.map((product: any) => {
+            {cart?.data?.items?.map((product: any) => {
               return (
                 <CartItem
                   key={product.cart_item_id}
                   id={product.cart_item_id}
+                  isDiscountApplied={product.is_discount_applied}
                   isSelected={product.is_selected}
                   variationCode={product.product_variation_id}
                   name={product.product_name}
@@ -117,7 +120,7 @@ export default function BasketPage() {
                 />
               );
             })}
-            {cart.data.length === 0 && (
+            {cart?.data?.items?.length === 0 && (
               <div className="mb-12 grid w-full place-items-center pt-10">
                 <img
                   src="/svg/Empty Cart.svg"

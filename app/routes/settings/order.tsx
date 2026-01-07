@@ -42,7 +42,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           <div className="mb-6 text-3xl font-medium">Summary</div>
           <div className="text-on-surface-variant mb-2 flex justify-between px-2">
             <div>Subtotal</div>
-            <div className="font-medium">${orderData.subtotal}</div>
+            <div className="font-medium">${orderData.subTotal}</div>
           </div>
           <div className="text-on-surface-variant mb-2 flex justify-between px-2">
             <div>Shipping</div>
@@ -50,7 +50,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="text-on-surface-variant mb-4 flex justify-between px-2">
             <div>Discount</div>
-            <div className="font-medium">${loaderData.data.discountAmount}</div>
+            <div className="font-medium">${orderData.discount}</div>
           </div>
           <div className="border-outline-variant text-on-surface mb-4 flex justify-between border-y py-3 text-lg font-medium">
             <div>Total</div>

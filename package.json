@@ -40,6 +40,7 @@
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.3.1",
     "use-mask-input": "^3.5.2",
+    "vaul": "^1.1.2",
     "zod": "^4.1.12",
     "zustand": "^5.0.7"
   },

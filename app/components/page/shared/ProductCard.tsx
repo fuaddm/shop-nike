@@ -59,7 +59,7 @@ export function ProductCard(properties: IProduct) {
               toast.warning('Sign in to save');
             }
           }}
-          className="bg-surface-container/40 hover:bg-surface-container-highest border-outline-variant absolute top-6 right-5 w-8 cursor-default rounded-full border p-1.5 transition"
+          className="bg-surface-container/40 hover:bg-surface-container-highest border-outline-variant absolute top-3 right-3 w-7 cursor-default rounded-full border p-1.5 transition md:top-6 md:right-5 md:w-8"
         >
           <HeartIcon
             className={cn({
@@ -70,9 +70,9 @@ export function ProductCard(properties: IProduct) {
         </Button>
         <div className="relative">
           <div className="transition ease-out group-hover:opacity-0">
-            <div className="block w-fit ps-1 text-base font-bold md:text-lg">{name}</div>
-            <div className="text-on-surface-variant w-fit ps-1 text-base">{variations.length} Colours</div>
-            <div className="text-on-surface-variant w-fit ps-1 text-base">{subTitle}</div>
+            <div className="block w-fit ps-1 text-sm font-bold md:text-lg">{name}</div>
+            <div className="text-on-surface-variant w-fit ps-1 text-sm md:text-base">{variations.length} Colours</div>
+            <div className="text-on-surface-variant w-fit ps-1 text-sm md:text-base">{subTitle}</div>
           </div>
           <div className="absolute top-0 bottom-0 left-0 flex gap-3 opacity-0 transition ease-out group-hover:opacity-100 md:mb-4">
             {variations &&
@@ -83,11 +83,13 @@ export function ProductCard(properties: IProduct) {
                     key={variation.code}
                     className="aspect-square h-full overflow-hidden rounded-md"
                   >
-                    <img
-                      src={variation.image}
-                      className="h-full w-full object-cover"
-                      alt=""
-                    />
+                    {variation.image && (
+                      <img
+                        src={variation.image}
+                        className="h-full w-full object-cover"
+                        alt=""
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -95,8 +97,8 @@ export function ProductCard(properties: IProduct) {
         </div>
       </div>
       <div className="ps-1">
-        <div className="flex items-start text-base font-bold md:text-xl md:font-bold">
-          <span className="text-sm font-normal">$</span>
+        <div className="flex items-start text-sm font-bold md:text-xl md:font-bold">
+          <span className="text-xs font-normal">$</span>
           {pricing.price}
         </div>
       </div>

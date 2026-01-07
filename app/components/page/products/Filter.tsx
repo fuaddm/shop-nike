@@ -63,7 +63,7 @@ export function Filter() {
   return (
     <div
       className={cn({
-        'me-6 w-[300px] min-w-[300px] transition-all duration-300': true,
+        'me-6 hidden w-[300px] min-w-[300px] transition-all duration-300 lg:block': true,
         'me-0 w-0 min-w-0': !isOpen,
       })}
     >

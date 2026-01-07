@@ -7,7 +7,7 @@ export function Spotlight() {
       <div className="mb-16 text-center">
         Classic silhouettes and cutting-edge innovation to build your game from the ground up.
       </div>
-      <div className="mx-auto flex max-w-[1000px] flex-wrap gap-12">
+      <div className="mx-auto flex max-w-[1000px] flex-wrap justify-between gap-7 md:justify-start md:gap-12">
         <Link
           to="/products?search=air+jordan"
           className="flex w-fit flex-col gap-1 transition ease-out hover:opacity-60"

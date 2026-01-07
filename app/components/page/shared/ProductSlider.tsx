@@ -107,7 +107,7 @@ export function ProductSlider({
       )}
       <Swiper
         spaceBetween={8}
-        slidesPerView={2.1}
+        slidesPerView={1.7}
         onSlideChange={slideChanged}
         resistanceRatio={0}
         onSwiper={(swiper) => (swiperReference.current = swiper)}

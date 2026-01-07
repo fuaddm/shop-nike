@@ -25,11 +25,11 @@ export default function Home() {
   const loaderData = useLoaderData<typeof loader>();
 
   return (
-    <div>
+    <>
       <HomeIntro />
       <HomePosters />
       <ProductsSection products={loaderData.products} />
       <Spotlight />
-    </div>
+    </>
   );
 }

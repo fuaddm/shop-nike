@@ -7,6 +7,7 @@ import { SearchInput } from '@ui/input/SearchInput';
 
 import { Filter } from '@components/page/products/Filter';
 import { HideAndShowFilter } from '@components/page/products/HideAndShowFilter';
+import { MobileFilter } from '@components/page/products/MobileFilter';
 import { PaginationProducts } from '@components/page/products/PaginationProducts';
 import { Sort } from '@components/page/products/Sort';
 import { ProductCard } from '@components/page/shared/ProductCard';
@@ -146,7 +147,7 @@ export default function ProductsPage() {
   return (
     <div className="container py-10">
       <h2 className="mb-6 text-center text-2xl font-semibold">{titleOfPage}</h2>
-      <div className="mb-4 flex items-center justify-end gap-3">
+      <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-end md:gap-3">
         <SearchInput
           key={search}
           defaultValue={search}
@@ -159,7 +160,10 @@ export default function ProductsPage() {
           }}
         />
         <HideAndShowFilter />
-        <Sort />
+        <div className="flex w-full items-center justify-between gap-2 md:w-fit md:justify-end">
+          <MobileFilter />
+          <Sort />
+        </div>
       </div>
       <div className="mb-10 flex">
         <Filter />
@@ -174,7 +178,7 @@ export default function ProductsPage() {
               </div>
             </div>
           )}
-          <div className="grid h-fit w-full grid-cols-2 gap-3 gap-y-4 md:gap-y-6 lg:grid-cols-3">
+          <div className="grid h-fit w-full grid-cols-2 gap-2 gap-y-2 md:grid-cols-3 md:gap-3 md:gap-y-6">
             {(fetcher.state === 'loading' || (fetcher.state === 'idle' && fetcher.data === undefined)) && (
               <>
                 {Array.from({ length: PAGE_SIZE })

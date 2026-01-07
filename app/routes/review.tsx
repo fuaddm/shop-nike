@@ -7,7 +7,6 @@ import { publicAPI } from '@api/public-api';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const variationCode = url.searchParams.get('variationCode');
 
   const cookieHeader = request.headers.get('Cookie');
   const cookie = (await userCookie.parse(cookieHeader)) || {};
@@ -15,12 +14,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const user = context.get(userContext);
 
   if (user?.isAuth) {
-    const resp = await authAPI.get(`/user/product-reviews?variationCode=${variationCode}`, cookie);
+    const resp = await authAPI.get(`/user/product-reviews${url.search}`, cookie);
     const data = await resp.json();
 
     return data.data;
   }
-  const resp = await publicAPI.get(`/user/product-reviews?variationCode=${variationCode}`, cookie);
+  const resp = await publicAPI.get(`/user/product-reviews${url.search}`, cookie);
   const data = await resp.json();
 
   return data.data;

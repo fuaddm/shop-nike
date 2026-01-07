@@ -77,13 +77,12 @@ export async function action({ request }: ActionFunctionArgs) {
       body: JSON.stringify({
         name: data.name,
         surname: data.surname,
-        // These fields are extracted directly from formData since they weren't in the schema
         countryId: rawData.country,
         locationId: rawData.state,
         city: data.city,
         zipCode: data.zipCode,
         phoneNumber: data.phoneNumber,
-        birth_date: formattedBirthDate,
+        birthDate: formattedBirthDate,
       }),
     });
 

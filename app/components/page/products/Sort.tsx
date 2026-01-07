@@ -15,10 +15,10 @@ export function Sort() {
       defaultSelectedKey={value ?? '1'}
       onSelectionChange={(key) => setValue(key)}
     >
-      <Button className="bg-surface-container hover:bg-surface-container-low flex items-center gap-4 rounded-lg px-4 py-2 transition ease-out data-focused:outline-none">
+      <Button className="bg-surface-container hover:bg-surface-container-low flex items-center gap-2 rounded-lg px-4 py-2 text-sm transition ease-out data-focused:outline-none md:gap-4 md:text-base">
         <SelectValue />
         <span aria-hidden="true">
-          <ChevronDown className="transition group-data-open:-rotate-180" />
+          <ChevronDown className="aspect-square w-5 transition group-data-open:-rotate-180 md:w-6" />
         </span>
       </Button>
       <Popover className="bg-surface-container data-placement-top w-[var(--trigger-width)] rounded-lg py-1 opacity-100 transition data-entering:-translate-y-0.5 data-entering:opacity-0 data-exiting:-translate-y-0.5 data-exiting:opacity-0 data-focused:outline-none">

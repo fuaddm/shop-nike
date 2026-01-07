@@ -22,7 +22,7 @@ import { cn } from '@libs/cn';
 export function Header() {
   const loaderData = useLoaderData<typeof loader>();
   const isAuth = loaderData.user?.isAuth;
-  const cartCount = loaderData.cart?.data.length ?? 0;
+  const cartCount = loaderData.cart?.data?.items?.length ?? 0;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ export function Header() {
   }
 
   return (
-    <div className="relative mb-18">
+    <div className="relative mb-12 md:mb-18">
       <div className="container flex justify-between py-1.5">
         <div className="flex gap-4">
           <Link
@@ -227,8 +227,8 @@ export function Header() {
           />
         </div>
         <div className="relative z-10 container">
-          <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap">
-            <div className="text-sm font-medium text-white md:text-xl">CYBER MONDAY</div>
+          <div className="flex flex-wrap items-center justify-between gap-1 md:flex-nowrap md:gap-3">
+            <div className="hidden text-xl font-medium text-white md:block">CYBER MONDAY</div>
             <div className="text-sm font-medium text-white md:text-xl">EXTRA 25% OFF SELECT STYLES</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,4 @@
-import { Check, Minus, Plus, Trash2 } from 'lucide-react';
+import { BadgePercent, Check, Minus, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button, Checkbox } from 'react-aria-components';
 import { Link, useFetcher } from 'react-router';
@@ -20,6 +20,7 @@ interface ICardProperties {
   variationCode: string;
   quantity: number;
   isSelected?: boolean;
+  isDiscountApplied?: boolean;
 }
 
 export function CartItem({
@@ -32,6 +33,7 @@ export function CartItem({
   img,
   variationCode,
   quantity,
+  isDiscountApplied = false,
   isSelected = true,
 }: ICardProperties) {
   const fetcher = useFetcher({ key: 'update-item-quantity' });
@@ -155,20 +157,30 @@ export function CartItem({
       </div>
       <div className="w-full">
         <div className="mt-1.5 flex items-start justify-between">
-          <Link
-            to={`/product/${variationCode}`}
-            className="font-medium"
-          >
-            {name}
-          </Link>
-          <div className="flex items-start gap-0.5">
-            <span className="text-sm font-medium">$</span>
-            <span className="font-semibold">{price}</span>
+          <div>
+            <Link
+              to={`/product/${variationCode}`}
+              className="font-medium"
+            >
+              {name}
+            </Link>
+            <div className="text-on-surface-variant">{category}</div>
+            <div className="text-on-surface-variant">{color}</div>
+            <div className="text-on-surface-variant">Size {size}</div>
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex items-start gap-0.5">
+              <span className="text-sm font-medium">$</span>
+              <span className="font-semibold">{price}</span>
+            </div>
+            {isDiscountApplied && (
+              <div className="flex items-center gap-1 rounded-full bg-green-50 py-1 ps-2 pe-3 text-sm text-green-800">
+                <BadgePercent className="h-5 w-5" />
+                Discount applied
+              </div>
+            )}
           </div>
         </div>
-        <div className="text-on-surface-variant">{category}</div>
-        <div className="text-on-surface-variant">{color}</div>
-        <div className="text-on-surface-variant">Size {size}</div>
       </div>
     </div>
   );

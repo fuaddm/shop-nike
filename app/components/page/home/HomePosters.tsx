@@ -46,7 +46,7 @@ export function Poster({ image, suptitle, title, to }: { image: string; suptitle
         <div className="mb-2 w-full text-xl font-medium md:text-2xl lg:max-w-2/3 lg:text-4xl">{title}</div>
         <Link
           to={to}
-          className="block w-fit rounded-full bg-white px-3 py-1 font-semibold text-black lg:px-5 lg:py-1.5"
+          className="block w-fit rounded-full bg-white px-3 py-1 font-semibold text-black transition hover:bg-white/80 lg:px-5 lg:py-1.5"
         >
           Shop
         </Link>

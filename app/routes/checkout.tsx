@@ -220,7 +220,7 @@ export default function CheckoutPage() {
             )}
           </Button>
           <div className="mt-4 flex flex-col gap-2">
-            {cart.data.map((item) => {
+            {cart.data.items.map((item) => {
               return (
                 <SimpleCartItem
                   key={item.cart_item_id}

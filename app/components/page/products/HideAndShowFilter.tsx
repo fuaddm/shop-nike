@@ -8,7 +8,7 @@ export function HideAndShowFilter() {
   return (
     <Button
       onPress={() => setIsOpen((previous) => !previous)}
-      className="bg-surface-container hover:bg-surface-container-low flex h-fit items-center gap-2 rounded-lg px-4 py-2 transition ease-out data-focused:outline-none"
+      className="bg-surface-container hover:bg-surface-container-low hidden h-fit items-center gap-2 rounded-lg px-4 py-2 transition ease-out data-focused:outline-none lg:flex"
     >
       {isOpen ? 'Hide' : 'Show'} Filters
       <SlidersHorizontal className="h-4 w-4" />
