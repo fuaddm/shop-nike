@@ -123,6 +123,7 @@ export default function PaymentPage() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <AddNewCard />
       {loaderData.data?.map((card) => {
         return (
           <CreditCard
@@ -134,7 +135,6 @@ export default function PaymentPage() {
           />
         );
       })}
-      <AddNewCard />
     </div>
   );
 }

@@ -135,7 +135,8 @@ export default function AddressesPage() {
 
   return (
     <div className="container">
-      <div className="mb-4 grid grid-cols-2 gap-3">
+      <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-2">
+        <AddNewAddress />
         {loaderData.addresses.map((address) => {
           return (
             <AddressCard
@@ -155,7 +156,6 @@ export default function AddressesPage() {
             />
           );
         })}
-        <AddNewAddress />
       </div>
     </div>
   );
