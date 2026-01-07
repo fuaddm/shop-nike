@@ -118,7 +118,7 @@ export function AuthModal() {
   return (
     <div
       className={cn({
-        'invisible fixed top-0 left-0 z-1000 grid h-full w-full place-items-center opacity-0 transition-all': true,
+        'invisible fixed top-0 left-0 z-1000 flex h-full w-full items-center justify-center opacity-0 transition-all md:grid md:place-items-center': true,
         'visible opacity-100': isOpen,
       })}
     >
@@ -126,8 +126,8 @@ export function AuthModal() {
         onClick={() => setIsOpen(false)}
         className="fixed top-0 left-0 z-0 h-full w-full bg-black/50"
       ></div>
-      <div className="pointer-events-none relative z-10 container mx-auto flex w-full justify-center">
-        <div className="border-outline-variant bg-surface-container pointer-events-auto w-full max-w-[520px] rounded-xl border px-5 py-4 shadow-xs">
+      <div className="pointer-events-none relative right-0 left-0 z-10 container w-full md:mx-auto md:flex md:justify-center">
+        <div className="border-outline-variant bg-surface-container pointer-events-auto w-full rounded-xl border px-5 py-4 shadow-xs md:max-w-[520px]">
           <div className="flex items-center justify-between gap-10">
             <div className="flex items-center gap-2">
               <div className="border-outline-variant bg-surface-container-high rounded-full border p-2">

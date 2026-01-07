@@ -37,15 +37,16 @@ export function Header() {
       setSearch(searchValue);
     }
   }
+  const setIsOpen = useMenuStore((state) => state.setIsOpen);
+  const isOpen = useMenuStore((state) => state.isOpen);
 
   useEffect(() => {
+    setIsOpen(false);
     if (location.pathname !== '/products') {
       setSearch('');
     }
   }, [location]);
 
-  const setIsOpen = useMenuStore((state) => state.setIsOpen);
-  const isOpen = useMenuStore((state) => state.isOpen);
   const [selectedMainCategory, setSelectedMainCategoryId] = useState<number | null>(null);
   const isAuthModalOpen = useAuthModalStore((state) => state.isOpen);
   const setIsAuthModalOpen = useAuthModalStore((state) => state.setIsOpen);

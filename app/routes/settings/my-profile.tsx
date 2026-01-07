@@ -1,5 +1,6 @@
+import { LogOut } from 'lucide-react';
 import { useEffect } from 'react';
-import { Input, Label } from 'react-aria-components';
+import { Button, Input, Label } from 'react-aria-components';
 import { redirect, useFetcher, useLoaderData } from 'react-router';
 import { toast } from 'sonner';
 import { userContext } from '~/context/user-context';
@@ -47,6 +48,7 @@ export default function MyProfile() {
   const { userData } = loaderData;
 
   const fetcher = useFetcher({ key: 'profile' });
+  const logoutFetcher = useFetcher();
   const loading = fetcher.state !== 'idle';
 
   useEffect(() => {
@@ -172,6 +174,19 @@ export default function MyProfile() {
           )}
         </PrimaryButton>
       </fetcher.Form>
+      <Button
+        type="button"
+        onPress={() =>
+          logoutFetcher.submit(null, {
+            action: '/logout',
+            method: 'post',
+          })
+        }
+        className="bg-surface-container hover:bg-surface-container-high border-outline-variant mt-4 flex w-full items-center gap-3 rounded-lg border px-4 py-2 text-red-700 transition ease-out dark:text-red-500"
+      >
+        <LogOut className="aspect-square w-5" />
+        Leave
+      </Button>
     </div>
   );
 }
