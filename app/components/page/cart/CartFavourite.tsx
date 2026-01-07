@@ -7,7 +7,7 @@ import { HeartIcon } from '@icons/HeartIcon';
 
 import { cn } from '@libs/cn';
 
-export function CartFavourite({ variationCode }: { variationCode: string }) {
+export function CartFavourite({ variationCode, className = '' }: { variationCode: string; className?: string }) {
   const fetcher = useFetcher();
   const { favourites, user } = useRouteLoaderData('root');
 
@@ -62,7 +62,10 @@ export function CartFavourite({ variationCode }: { variationCode: string }) {
           toast.warning('Sign in to save');
         }
       }}
-      className="bg-surface-container-highest hover:bg-surface-dim group aspect-square w-10 rounded-full p-2.5 transition ease-out"
+      className={cn({
+        'bg-surface-container-highest hover:bg-surface-dim group aspect-square w-10 rounded-full p-2.5 transition ease-out': true,
+        [className]: true,
+      })}
     >
       <HeartIcon
         className={cn({

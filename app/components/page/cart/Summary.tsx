@@ -17,6 +17,7 @@ export function Summary() {
   const { cart } = useRouteLoaderData('root');
   const cartLength = cart?.data?.items?.length ?? 0;
   const cartPromocode = cart?.data?.promo_code_id ?? null;
+  const numberOfSelectedItems = cart?.data?.items?.filter((item: any) => item.is_selected)?.length;
 
   const loaderData = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,7 +51,7 @@ export function Summary() {
 
   return (
     <div className="bg-surface-container h-fit rounded-md px-5 py-4">
-      <div className="mb-6 text-3xl font-medium">Summary</div>
+      <div className="mb-6 text-xl font-medium md:text-3xl">Summary</div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Subtotal</div>
         <div className="font-medium">${loaderData.data.subtotal}</div>
@@ -113,7 +114,9 @@ export function Summary() {
           })}
         >
           <Tag className="h-5 w-5" />
-          <div className="font-semibold text-green-600 uppercase dark:text-green-200">{cartPromocode}</div>
+          <div className="text-sm font-semibold text-green-600 uppercase md:text-base dark:text-green-200">
+            {cartPromocode}
+          </div>
           <Button className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out">
             <X />
           </Button>
@@ -121,7 +124,7 @@ export function Summary() {
       )}
       {loaderData.data.promoCodeError && <div className="text-error mb-3">{loaderData.data.promoCodeError}</div>}
       <Button
-        isDisabled={cartLength === 0 || loading}
+        isDisabled={cartLength === 0 || loading || numberOfSelectedItems === 0}
         onPress={() => {
           navigate({
             pathname: '/checkout',

@@ -8,6 +8,8 @@ import { CartFavourite } from '@components/page/cart/CartFavourite';
 
 import { cn } from '@libs/cn';
 
+import { CartItemCount } from './CartItemCount';
+
 interface ICardProperties {
   id: string;
   name: string;
@@ -91,96 +93,90 @@ export function CartItem({
   return (
     <div
       className={cn({
-        'bg-surface-container relative flex gap-3 rounded-md p-3': true,
+        'bg-surface-container relative rounded-md p-3': true,
         'animate-pulse opacity-50': loading,
       })}
     >
-      <Checkbox
-        defaultSelected={isSelected}
-        onChange={() => {
-          toggleIsSelected();
-        }}
-        className="bg-surface-container group border-outline-variant h-6 w-6 min-w-6 overflow-hidden rounded-md border"
-      >
-        <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint grid h-full w-full place-items-center p-0.75 transition">
-          <Check className="stroke-surface-bright h-full w-full opacity-0 transition group-data-selected:opacity-100" />
-        </div>
-      </Checkbox>
-      <div>
-        <div className="bg-surface-dim relative mb-2 aspect-square w-34 overflow-hidden rounded-md">
-          <img
-            src={img}
-            className="h-full w-full object-cover"
-            alt=""
+      <div className="flex gap-2 md:gap-3">
+        <Checkbox
+          defaultSelected={isSelected}
+          onChange={() => {
+            toggleIsSelected();
+          }}
+          className="bg-surface-container group border-outline-variant h-5 w-5 min-w-5 overflow-hidden rounded-md border md:h-6 md:w-6 md:min-w-6"
+        >
+          <div className="border-outline group-data-selected:bg-surface-tint group-data-selected:border-surface-tint grid h-full w-full place-items-center p-0.75 transition">
+            <Check className="stroke-surface-bright h-full w-full opacity-0 transition group-data-selected:opacity-100" />
+          </div>
+        </Checkbox>
+        <div>
+          <Link
+            to={`/product/${variationCode}`}
+            className="bg-surface-dim relative mb-2 block aspect-square w-18 overflow-hidden rounded-md md:w-34"
+          >
+            <img
+              src={img}
+              className="h-full w-full object-cover"
+              alt=""
+            />
+          </Link>
+          <CartItemCount
+            loading={loading}
+            decreaseQuantity={decreaseQuantity}
+            increaseQuantity={increaseQuantity}
+            optimisticQuantity={optimisticQuantity}
+            variationCode={variationCode}
+            className="hidden md:flex"
           />
         </div>
-        <div className="flex gap-2">
-          <div className="bg-surface-container-highest flex items-center rounded-full">
-            <Button
-              isDisabled={loading}
-              onPress={decreaseQuantity}
-              className={cn({
-                'grid aspect-square w-10 place-items-center rounded-full transition ease-out': true,
-                'hover:bg-surface-dim': !loading,
-              })}
-            >
-              {optimisticQuantity === 1 && (
-                <Trash2
-                  className="stroke-on-surface-variant"
-                  size={18}
-                />
+        <div className="w-full">
+          <div className="flex items-start justify-between gap-3 md:mt-1.5">
+            <div>
+              <Link
+                to={`/product/${variationCode}`}
+                className="text-sm font-medium md:text-base"
+              >
+                {name}
+              </Link>
+              {isDiscountApplied && (
+                <div className="mt-1 flex w-fit items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-800 md:hidden">
+                  <BadgePercent className="h-3.5 w-3.5" />
+                  Discount
+                </div>
               )}
-              {optimisticQuantity !== 1 && (
-                <Minus
-                  className="stroke-on-surface-variant"
-                  size={18}
-                />
-              )}
-            </Button>
-            <div className="mx-2 cursor-default">{optimisticQuantity}</div>
-            <Button
-              isDisabled={loading}
-              onPress={increaseQuantity}
-              className={cn({
-                'grid aspect-square w-10 place-items-center rounded-full transition ease-out': true,
-                'hover:bg-surface-dim': !loading,
-              })}
-            >
-              <Plus
-                className="stroke-on-surface-variant"
-                size={18}
+              <div className="hidden md:block">
+                <div className="text-on-surface-variant text-sm md:text-base">{category}</div>
+                <div className="text-on-surface-variant text-sm md:text-base">{color}</div>
+                <div className="text-on-surface-variant text-sm md:text-base">Size {size}</div>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <CartItemCount
+                loading={loading}
+                decreaseQuantity={decreaseQuantity}
+                increaseQuantity={increaseQuantity}
+                optimisticQuantity={optimisticQuantity}
+                variationCode={variationCode}
+                className="flex md:hidden"
               />
-            </Button>
+              <div className="flex items-start gap-0.5">
+                <span className="text-sm font-medium">$</span>
+                <span className="font-semibold">{price}</span>
+              </div>
+              {isDiscountApplied && (
+                <div className="hidden items-center gap-1 rounded-full bg-green-50 py-1 ps-2 pe-3 text-xs text-green-800 md:flex md:text-sm">
+                  <BadgePercent className="h-5 w-5" />
+                  Discount applied
+                </div>
+              )}
+            </div>
           </div>
-          <CartFavourite variationCode={variationCode} />
         </div>
       </div>
-      <div className="w-full">
-        <div className="mt-1.5 flex items-start justify-between">
-          <div>
-            <Link
-              to={`/product/${variationCode}`}
-              className="font-medium"
-            >
-              {name}
-            </Link>
-            <div className="text-on-surface-variant">{category}</div>
-            <div className="text-on-surface-variant">{color}</div>
-            <div className="text-on-surface-variant">Size {size}</div>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <div className="flex items-start gap-0.5">
-              <span className="text-sm font-medium">$</span>
-              <span className="font-semibold">{price}</span>
-            </div>
-            {isDiscountApplied && (
-              <div className="flex items-center gap-1 rounded-full bg-green-50 py-1 ps-2 pe-3 text-sm text-green-800">
-                <BadgePercent className="h-5 w-5" />
-                Discount applied
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="mt-1 grid grid-cols-3 divide-x md:hidden">
+        <div className="text-on-surface-variant w-full text-center text-sm md:text-base">{category}</div>
+        <div className="text-on-surface-variant w-full text-center text-sm md:text-base">{color}</div>
+        <div className="text-on-surface-variant w-full text-center text-sm md:text-base">Size {size}</div>
       </div>
     </div>
   );

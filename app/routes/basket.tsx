@@ -94,7 +94,7 @@ export default function BasketPage() {
   return (
     <div className="container pt-12 pb-20">
       <div className="mb-12 text-center text-3xl font-semibold">Basket</div>
-      <div className="grid grid-cols-[1fr_450px] gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_450px]">
         <div>
           {cart?.data?.items?.length > 0 && (
             <div className="mb-2 font-medium">

@@ -64,7 +64,7 @@ export default function FavouritePage() {
   return (
     <div className="container pt-12">
       <div className="mb-12 text-center text-3xl font-semibold">Favourites</div>
-      <div className="mb-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mb-12 grid grid-cols-2 gap-2 md:gap-4 lg:grid-cols-4">
         {(fetcher.state === 'loading' || (fetcher.state === 'idle' && fetcher.data === undefined)) && (
           <>
             {Array.from({ length: Math.min(loaderData.favourites.data.totalCount, 12) })

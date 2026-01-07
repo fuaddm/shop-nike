@@ -116,12 +116,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="container pt-12 pb-20">
-      <div className="grid grid-cols-[1fr_450px] gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_450px]">
         <div>
           <div className="mb-12 text-center text-3xl font-semibold">Checkout</div>
           <div className="mb-3 flex flex-col gap-4">
             <div className="text-xl font-medium">Delivery</div>
-            <div className="mb-4 grid grid-cols-2 gap-3">
+            <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-2">
               {addressFetcher.data?.addresses &&
                 addressFetcher.data.addresses.map((address) => {
                   return (
