@@ -15,14 +15,19 @@ import { cn } from '@libs/cn';
 
 export function Summary() {
   const { cart } = useRouteLoaderData('root');
+
+  const discountAmount = cart?.data?.discount_amount;
+  const subtotalPrice = cart?.data?.subtotal;
+  const totalPrice = cart?.data?.total_price;
+
   const cartLength = cart?.data?.items?.length ?? 0;
   const cartPromocode = cart?.data?.promo_code_id ?? null;
   const numberOfSelectedItems = cart?.data?.items?.filter((item: any) => item.is_selected)?.length;
 
   const loaderData = useLoaderData();
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigation = useNavigation();
   const fetcher = useFetcher();
+  const resetPromocodeFetcher = useFetcher();
   const updateItemQuantityFetcher = useFetcher({ key: 'update-item-quantity' });
 
   const navigate = useNavigate();
@@ -33,28 +38,30 @@ export function Summary() {
   const loading = navigation.state !== 'idle' || fetcher.state !== 'idle' || updateItemQuantityFetcher.state !== 'idle';
 
   useEffect(() => {
-    if (fetcher.state === 'idle') {
-      if (fetcher.data?.success === true) {
-        const params = new URLSearchParams();
-        params.set('promocode', fetcher.data?.promocode);
-        setSearchParams(params, {
-          preventScrollReset: true,
-        });
-      } else {
-        if (fetcher.data?.errorMsg) {
-          setPromocodeValidError(true);
-          toast.error(fetcher.data.errorMsg);
-        }
-      }
+    if (fetcher.state === 'idle' && fetcher.data?.success !== true && fetcher.data?.errorMsg) {
+      setPromocodeValidError(true);
+      toast.error(fetcher.data.errorMsg);
     }
   }, [fetcher]);
+
+  function handlePressToRemovePromocode() {
+    resetPromocodeFetcher.submit(
+      {
+        actionName: 'reset-promocode',
+      },
+      {
+        method: 'POST',
+      }
+    );
+    setPromocodeValue('');
+  }
 
   return (
     <div className="bg-surface-container h-fit rounded-md px-5 py-4">
       <div className="mb-6 text-xl font-medium md:text-3xl">Summary</div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Subtotal</div>
-        <div className="font-medium">${loaderData.data.subtotal}</div>
+        <div className="font-medium">${subtotalPrice}</div>
       </div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Shipping</div>
@@ -62,11 +69,11 @@ export function Summary() {
       </div>
       <div className="text-on-surface-variant mb-4 flex justify-between px-2">
         <div>Discount</div>
-        <div className="font-medium">${loaderData.data.discountAmount}</div>
+        <div className="font-medium">${discountAmount}</div>
       </div>
       <div className="border-outline-variant text-on-surface mb-4 flex justify-between border-y py-3 text-lg font-medium">
         <div>Total</div>
-        <div className="font-medium">${loaderData.data.totalPrice}</div>
+        <div className="font-medium">${totalPrice}</div>
       </div>
       <fetcher.Form
         method="POST"
@@ -117,7 +124,10 @@ export function Summary() {
           <div className="text-sm font-semibold text-green-600 uppercase md:text-base dark:text-green-200">
             {cartPromocode}
           </div>
-          <Button className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out">
+          <Button
+            onPress={handlePressToRemovePromocode}
+            className="hover:bg-on-tertiary-container/10 rounded-md p-1 transition ease-out"
+          >
             <X />
           </Button>
         </div>
@@ -141,7 +151,12 @@ export function Summary() {
   );
 }
 export function SimpleSummary() {
-  const { summary } = useLoaderData();
+  const { cart } = useRouteLoaderData('root');
+
+  const discountAmount = cart?.data?.discount_amount;
+  const subtotalPrice = cart?.data?.subtotal;
+  const totalPrice = cart?.data?.total_price;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const fetcher = useFetcher();
 
@@ -164,7 +179,7 @@ export function SimpleSummary() {
       <div className="mb-6 text-3xl font-medium">In Your Bag</div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Subtotal</div>
-        <div className="font-medium">${summary.data.subtotal}</div>
+        <div className="font-medium">${subtotalPrice}</div>
       </div>
       <div className="text-on-surface-variant mb-2 flex justify-between px-2">
         <div>Shipping</div>
@@ -172,13 +187,12 @@ export function SimpleSummary() {
       </div>
       <div className="text-on-surface-variant mb-4 flex justify-between px-2">
         <div>Discount</div>
-        <div className="font-medium">${summary.data.discountAmount}</div>
+        <div className="font-medium">${discountAmount}</div>
       </div>
       <div className="border-outline-variant text-on-surface flex justify-between border-t px-2 py-3 text-lg font-medium">
         <div>Total</div>
-        <div className="font-medium">${summary.data.totalPrice}</div>
+        <div className="font-medium">${totalPrice}</div>
       </div>
-      {summary.data.promoCodeError && <div className="text-error mb-3">{summary.data.promoCodeError}</div>}
     </div>
   );
 }

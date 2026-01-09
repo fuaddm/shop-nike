@@ -28,7 +28,6 @@ import { mainAPI } from '@api/config';
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get('Cookie');
   const cookie = (await userCookie.parse(cookieHeader)) || {};
-  const promoCodeId = new URL(request.url).searchParams.get('promocode');
 
   const user = context.get(userContext);
   if (!user?.isAuth) {
@@ -39,15 +38,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         token: cookie.privateToken,
       },
     });
-    if (promoCodeId) {
-      const resp = await authAPI.get(`/user/total-price?promoCodeId=${promoCodeId}`, cookie);
-      const data = await resp.json();
-      return { summary: data, countriesAndRegions: countryAndRegionResp.data.data };
-    } else {
-      const resp = await authAPI.get('/user/total-price', cookie);
-      const data = await resp.json();
-      return { summary: data, countriesAndRegions: countryAndRegionResp.data.data };
-    }
+    return { countriesAndRegions: countryAndRegionResp.data.data };
   }
 }
 
@@ -228,6 +219,7 @@ export default function CheckoutPage() {
                   img={item.first_image}
                   color={item.color}
                   category={item.main_category}
+                  discountedPrice={item.discounted_price}
                   price={item.price}
                   quantity={item.quantity}
                   name={item.product_name}

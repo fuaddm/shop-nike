@@ -1,10 +1,8 @@
-import { BadgePercent, Check, Minus, Plus, Trash2 } from 'lucide-react';
+import { BadgePercent, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button, Checkbox } from 'react-aria-components';
+import { Checkbox } from 'react-aria-components';
 import { Link, useFetcher } from 'react-router';
 import { toast } from 'sonner';
-
-import { CartFavourite } from '@components/page/cart/CartFavourite';
 
 import { cn } from '@libs/cn';
 
@@ -23,6 +21,7 @@ interface ICardProperties {
   quantity: number;
   isSelected?: boolean;
   isDiscountApplied?: boolean;
+  discountedPrice?: number | null;
 }
 
 export function CartItem({
@@ -37,6 +36,7 @@ export function CartItem({
   quantity,
   isDiscountApplied = false,
   isSelected = true,
+  discountedPrice = null,
 }: ICardProperties) {
   const fetcher = useFetcher({ key: 'update-item-quantity' });
   const [optimisticQuantity, setOptimisticQuantity] = useState(quantity);
@@ -159,10 +159,24 @@ export function CartItem({
                 variationCode={variationCode}
                 className="flex md:hidden"
               />
-              <div className="flex items-start gap-0.5">
-                <span className="text-sm font-medium">$</span>
-                <span className="font-semibold">{price}</span>
-              </div>
+              {discountedPrice === Number(price) && (
+                <div className="flex items-start gap-0.5">
+                  <span className="text-sm font-medium">$</span>
+                  <span className="font-semibold">{price}</span>
+                </div>
+              )}
+              {discountedPrice !== Number(price) && (
+                <div className="flex flex-col items-end">
+                  <div className="text-on-surface-variant flex items-start gap-0.5 line-through">
+                    <span className="text-xs">$</span>
+                    <span className="text-sm font-medium">{price}</span>
+                  </div>
+                  <div className="flex items-start gap-0.5">
+                    <span className="text-sm font-medium">$</span>
+                    <span className="font-semibold">{discountedPrice}</span>
+                  </div>
+                </div>
+              )}
               {isDiscountApplied && (
                 <div className="hidden items-center gap-1 rounded-full bg-green-50 py-1 ps-2 pe-3 text-xs text-green-800 md:flex md:text-sm">
                   <BadgePercent className="h-5 w-5" />
@@ -192,6 +206,7 @@ export function SimpleCartItem({
   img,
   quantity,
   variationCode,
+  discountedPrice = null,
 }: ICardProperties) {
   return (
     <div className="bg-surface-container flex gap-3 rounded-md p-3">
@@ -223,12 +238,12 @@ export function SimpleCartItem({
                 <span className="font-semibold">{price}</span>
               </div>
             </div>
-            {subtotal && subtotal !== price && (
+            {discountedPrice && discountedPrice !== Number(price) && (
               <div>
                 <div className="text-on-surface-variant text-sm">Subtotal:</div>
                 <div className="flex items-start gap-0.5">
                   <span className="text-sm font-medium">$</span>
-                  <span className="font-semibold">{subtotal}</span>
+                  <span className="font-semibold">{discountedPrice}</span>
                 </div>
               </div>
             )}

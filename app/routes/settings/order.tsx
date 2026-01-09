@@ -100,6 +100,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
               img={item.image}
               color={item.colorName}
               category={item.main_category}
+              discountedPrice={item.discountedPrice}
               price={item.price}
               subtotal={item.subtotal}
               quantity={item.quantity}

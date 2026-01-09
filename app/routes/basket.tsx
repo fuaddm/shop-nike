@@ -82,6 +82,14 @@ export async function action({ request }: ActionFunctionArgs) {
       return { success: false, errorMsg: data.result.errorMsg };
     }
     return { success: true, promocode };
+  } else if (actionName === 'reset-promocode') {
+    const resp = await authAPI.post('/user/reset-promo-code', cookie);
+    const data = await resp.json();
+
+    if (data.result.status === false) {
+      return { success: false, errorMsg: data.result.errorMsg };
+    }
+    return { success: true };
   }
 
   return { success: false };
@@ -113,6 +121,7 @@ export default function BasketPage() {
                   name={product.product_name}
                   category={product.main_category}
                   color={product.color}
+                  discountedPrice={product.discounted_price}
                   price={product.price}
                   size={product.size}
                   quantity={product.quantity}
