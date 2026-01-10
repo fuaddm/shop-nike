@@ -13,6 +13,8 @@ import { Sort } from '@components/page/products/Sort';
 import { ProductCard } from '@components/page/shared/ProductCard';
 import { SkeletonProductCard } from '@components/page/shared/SkeletonProductCard';
 
+import { useProductFilters } from '@hooks/useProductFilters';
+
 export function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
@@ -37,6 +39,7 @@ const searchParameters = {
   ClothingGenderId: parseAsNativeArrayOf(parseAsString),
   ColorId: parseAsNativeArrayOf(parseAsString),
   search: parseAsString,
+  q: parseAsString,
   PageNumber: parseAsString,
 };
 const serialize = createSerializer(searchParameters);
@@ -66,33 +69,13 @@ export default function ProductsPage() {
 
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions({ shallow: true }));
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-
-    if (searchParams.get('search') !== search) {
-    }
-  }, [location]);
-
   const fetcher = useFetcher();
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
 
-  const [sortId, setSortId] = useQueryState('SortId', {
-    defaultValue: '1',
-  });
   const [mainCategoryId, setMainCategoryId] = useQueryState('MainCategoryId');
   const [categoryId, setCategoryId] = useQueryState('CategoryId');
   const [subCategoryId, setSubCategoryId] = useQueryState('SubCategoryId');
-  const [priceRangeId, setPriceRangeId] = useQueryState('PriceRangeId');
-  const [clothingGenderId, setClothingGenderId] = useQueryState(
-    'ClothingGenderId',
-    parseAsNativeArrayOf(parseAsString)
-  );
-  const [colorId, setColorId] = useQueryState('ColorId', parseAsNativeArrayOf(parseAsString));
-  const [pageNumber, setPageNumber] = useQueryState('PageNumber', {
-    defaultValue: '1',
-    scroll: true,
-  });
 
   const titleOfPage = getTitle(
     rootLoaderData.hierarchy.data.hierarchies,
@@ -101,33 +84,8 @@ export default function ProductsPage() {
     Number(subCategoryId)
   );
 
-  const searchParametersSerialized = serialize({
-    SortId: sortId,
-    MainCategoryId: mainCategoryId,
-    CategoryId: categoryId,
-    SubCategoryId: subCategoryId,
-    PriceRangeId: priceRangeId,
-    ClothingGenderId: clothingGenderId,
-    ColorId: colorId,
-    search,
-    PageNumber: pageNumber,
-  });
-
-  const resetFilters = () => {
-    setMainCategoryId(null);
-    setSortId(null);
-    setCategoryId(null);
-    setSubCategoryId(null);
-    setPriceRangeId(null);
-    setClothingGenderId(null);
-    setColorId(null);
-  };
-
-  const handleSearchChange = (newTerm: string) => {
-    setSearch(newTerm);
-    setPageNumber('1');
-    resetFilters();
-  };
+  const { searchParametersSerialized, handleSearchChange, handleGlobalSearchChange, debouncedSearch } =
+    useProductFilters();
 
   useEffect(() => {
     if (navigation.location?.pathname === '/products' || navigation.location === undefined) {
@@ -141,8 +99,6 @@ export default function ProductsPage() {
       setTotal(fetcher.data.totalCount);
     }
   }, [fetcher]);
-
-  const debouncedSearch = useCallback(debounce(handleSearchChange, 500), []);
 
   return (
     <div className="container py-10">

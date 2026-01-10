@@ -12,7 +12,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const cookie = (await userCookie.parse(cookieHeader)) || {};
   const url = new URL(request.url);
   url.searchParams.append('PageSize', String(PAGE_SIZE));
-  const search = url.searchParams.get('search');
+  const search = url.searchParams.get('search') !== '' ? url.searchParams.get('search') : url.searchParams.get('q');
 
   const user = context.get(userContext);
   let products;

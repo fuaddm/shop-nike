@@ -1,7 +1,6 @@
 import { Menu } from '@layout/Menu';
 import { UserButton } from '@layout/UserButton';
 import { Heart, Menu as MenuIcon, ShoppingCartIcon } from 'lucide-react';
-import { parseAsString, useQueryState } from 'nuqs';
 import { type MouseEvent, useEffect, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
@@ -13,6 +12,8 @@ import { Logo } from '@components/page/shared/Logo';
 
 import { useAuthModalStore } from '@stores/authModalStore';
 import { useMenuStore } from '@stores/menuStore';
+
+import { useProductFilters } from '@hooks/useProductFilters';
 
 import { ConverseIcon } from '@icons/ConverseIcon';
 import { JordanIcon } from '@icons/JordanIcon';
@@ -27,14 +28,16 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  function setGlobalSearch(searchValue: string) {
+  const { handleGlobalSearchChange, globalSearch } = useProductFilters();
+
+  function doGlobalSearch(searchValue: string) {
     if (location.pathname !== '/products') {
       navigate({
         pathname: '/products',
         search: `search=${searchValue}`,
       });
     } else {
-      setSearch(searchValue);
+      handleGlobalSearchChange(searchValue);
     }
   }
   const setIsOpen = useMenuStore((state) => state.setIsOpen);
@@ -43,15 +46,13 @@ export function Header() {
   useEffect(() => {
     setIsOpen(false);
     if (location.pathname !== '/products') {
-      setSearch('');
+      handleGlobalSearchChange('');
     }
   }, [location]);
 
   const [selectedMainCategory, setSelectedMainCategoryId] = useState<number | null>(null);
   const isAuthModalOpen = useAuthModalStore((state) => state.isOpen);
   const setIsAuthModalOpen = useAuthModalStore((state) => state.setIsOpen);
-
-  const [search, setSearch] = useQueryState('search', parseAsString.withDefault('').withOptions({ shallow: true }));
 
   const menuReference = useRef<HTMLDivElement | null>(null);
   const navReference = useRef<HTMLDivElement | null>(null);
@@ -171,12 +172,12 @@ export function Header() {
             </Button>
             <div className="hidden xl:block">
               <GlobalSearchInput
-                key={search}
-                defaultValue={location.pathname === '/products' ? search : ''}
+                key={globalSearch}
+                defaultValue={location.pathname === '/products' ? globalSearch : ''}
                 name="global-search"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    setGlobalSearch(e.target.value);
+                    doGlobalSearch(e.target.value);
                   }
                 }}
               />
